@@ -93,12 +93,17 @@
   .bk-row.warn .bk-label, .bk-row.warn .bk-val { color: #f59e0b; }
   .divider { height: 1px; background: #1a2235; margin: 4px 0; }
   .chart-wrap { margin-bottom: 16px; }
-  .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
   .chart-sub { color: #6b7a8d; font-size: 10px; text-align: right; }
-  .chart-canvas { width: 100%; height: 220px; display: block; background: #0a0f1a; border: 1px solid #1a2235; border-radius: 8px; }
+  .chart-panel { margin-top: 16px; }
+  .chart-panel:first-child { margin-top: 0; }
+  .chart-canvas { width: 100%; height: 240px; display: block; background: #0a0f1a; border: 1px solid #1a2235; border-radius: 8px; }
   .chart-legend { display: flex; gap: 14px; margin-top: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #6b7a8d; }
   .chart-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-  .chart-dot.delta { background: #4ade80; }
+  .chart-dot.green { background: #4ade80; }
+  .chart-dot.red { background: #f87171; }
+  .chart-dot.blue { background: #4a90d9; }
+  .chart-dot.amber { background: #f59e0b; }
   .note { font-size: 10px; color: #3a4558; text-align: center; margin-top: 12px; line-height: 1.6; }
 </style>
 </head>
@@ -360,13 +365,38 @@
   </div>
 
   <div class="cost-card chart-wrap">
-    <div class="chart-head">
-      <div class="section-title purple" style="margin:0">Net Position Change Over Time</div>
-      <div class="chart-sub" id="chartBreakEven"></div>
+    <div class="chart-panel">
+      <div class="chart-head">
+        <div class="section-title purple" style="margin:0">Cumulative Advantage</div>
+        <div class="chart-sub" id="chartBreakEven"></div>
+      </div>
+      <canvas class="chart-canvas" id="advantageChart"></canvas>
+      <div class="chart-legend">
+        <span><span class="chart-dot green"></span>Switch ahead</span>
+        <span><span class="chart-dot red"></span>Keep ahead</span>
+      </div>
     </div>
-    <canvas class="chart-canvas" id="netChart"></canvas>
-    <div class="chart-legend">
-      <span><span class="chart-dot delta"></span>Switch minus keep</span>
+    <div class="chart-panel">
+      <div class="chart-head">
+        <div class="section-title purple" style="margin:0">Annual Momentum</div>
+        <div class="chart-sub" id="momentumSub"></div>
+      </div>
+      <canvas class="chart-canvas" id="momentumChart"></canvas>
+      <div class="chart-legend">
+        <span><span class="chart-dot green"></span>Improves switch case</span>
+        <span><span class="chart-dot red"></span>Hurts switch case</span>
+      </div>
+    </div>
+    <div class="chart-panel">
+      <div class="chart-head">
+        <div class="section-title purple" style="margin:0">Result Drivers</div>
+        <div class="chart-sub" id="waterfallSub"></div>
+      </div>
+      <canvas class="chart-canvas" id="waterfallChart"></canvas>
+      <div class="chart-legend">
+        <span><span class="chart-dot blue"></span>Positive driver</span>
+        <span><span class="chart-dot amber"></span>Negative driver</span>
+      </div>
     </div>
   </div>
 
@@ -418,35 +448,42 @@ function projectAt(d,year){
 }
 function buildSeries(d){const pts=[];for(let yr=0;yr<=d.y;yr++)pts.push(projectAt(d,yr));return pts;}
 function breakEvenText(pts){if(!pts.length)return '';if(pts[0].net>=0)return 'Break-even: immediate';for(let i=1;i<pts.length;i++){if(pts[i].net>=0){const prev=pts[i-1],span=pts[i].net-prev.net,yr=span===0?pts[i].year:prev.year+(0-prev.net)/span;return 'Break-even: '+yr.toFixed(1)+'yr';}}return 'No break-even by '+pts[pts.length-1].year+'yr';}
-function drawChart(pts){
-  const canvas=$('netChart'),ctx=canvas.getContext('2d'),rect=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1;
+function moneyK(n){return fmtS(Math.round(n/1000)*1000).replace(',000','k');}
+function chartCtx(id){
+  const canvas=$(id),ctx=canvas.getContext('2d'),rect=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1;
   canvas.width=Math.max(1,Math.round(rect.width*ratio));canvas.height=Math.max(1,Math.round(rect.height*ratio));ctx.setTransform(ratio,0,0,ratio,0,0);
-  const w=rect.width,h=rect.height,p={l:52,r:12,t:18,b:34};ctx.clearRect(0,0,w,h);
-  const vals=pts.map(pt=>pt.net).concat(0);let min=Math.min(...vals),max=Math.max(...vals);if(min===max){min-=1000;max+=1000;}const pad=(max-min)*0.18;min-=pad;max+=pad;
-  const x=yr=>p.l+(yr/pts[pts.length-1].year)*(w-p.l-p.r),y=v=>p.t+(max-v)/(max-min)*(h-p.t-p.b);
-  ctx.font='10px JetBrains Mono, monospace';ctx.lineWidth=1;ctx.strokeStyle='#1a2235';ctx.fillStyle='#4a5568';
-  for(let i=0;i<=4;i++){const val=min+(max-min)*i/4,yy=y(val);ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText((val<0?'-':'')+'$'+Math.round(Math.abs(val)/1000)+'k',8,yy+3);}
-  const zeroY=y(0);
-  ctx.strokeStyle='#2a3348';ctx.beginPath();ctx.moveTo(p.l,zeroY);ctx.lineTo(w-p.r,zeroY);ctx.stroke();
-  pts.forEach(pt=>{ctx.fillStyle='#4a5568';ctx.fillText(String(pt.year),x(pt.year)-3,h-12);});
-  const step=(w-p.l-p.r)/Math.max(1,pts.length-1),barW=Math.min(42,Math.max(18,step*.42));
-  pts.forEach(pt=>{
-    const xx=x(pt.year),yy=y(pt.net),top=Math.min(yy,zeroY),height=Math.max(2,Math.abs(zeroY-yy));
-    const pos=pt.net>=0,color=pos?'#4ade80':'#f87171',fill=pos?'rgba(74,222,128,.18)':'rgba(248,113,113,.18)';
-    ctx.fillStyle=fill;ctx.fillRect(xx-barW/2,top,barW,height);
-    ctx.strokeStyle=color;ctx.lineWidth=1;ctx.strokeRect(xx-barW/2,top,barW,height);
-  });
-  ctx.strokeStyle='#4ade80';ctx.lineWidth=2;ctx.beginPath();
-  pts.forEach((pt,i)=>{const xx=x(pt.year),yy=y(pt.net);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});
-  ctx.stroke();
-  pts.forEach(pt=>{
-    const xx=x(pt.year),yy=y(pt.net),pos=pt.net>=0,label=fmtS(Math.round(pt.net/1000)*1000).replace(',000','k');
-    ctx.fillStyle=pos?'#4ade80':'#f87171';ctx.beginPath();ctx.arc(xx,yy,3,0,Math.PI*2);ctx.fill();
-    ctx.textAlign='center';ctx.font='600 10px JetBrains Mono, monospace';
-    ctx.fillText(label,xx,Math.max(12,Math.min(h-22,yy+(pos?-10:16))));
-  });
-  ctx.textAlign='left';
+  ctx.clearRect(0,0,rect.width,rect.height);ctx.font='10px JetBrains Mono, monospace';ctx.textAlign='left';
+  return {ctx,w:rect.width,h:rect.height,p:{l:52,r:34,t:18,b:36}};
 }
+function scale(vals,h,p){
+  let min=Math.min(...vals,0),max=Math.max(...vals,0);if(min===max){min-=1000;max+=1000;}const pad=(max-min)*.16;min-=pad;max+=pad;
+  return {min,max,y:v=>p.t+(max-v)/(max-min)*(h-p.t-p.b)};
+}
+function grid(ctx,w,h,p,s){
+  ctx.lineWidth=1;ctx.strokeStyle='#1a2235';ctx.fillStyle='#4a5568';ctx.textAlign='left';
+  for(let i=0;i<=4;i++){const val=s.min+(s.max-s.min)*i/4,yy=s.y(val);ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText((val<0?'-':'')+'$'+Math.round(Math.abs(val)/1000)+'k',8,yy+3);}
+  ctx.strokeStyle='#2a3348';ctx.beginPath();ctx.moveTo(p.l,s.y(0));ctx.lineTo(w-p.r,s.y(0));ctx.stroke();
+}
+function drawAdvantage(pts){
+  const {ctx,w,h,p}=chartCtx('advantageChart'),s=scale(pts.map(pt=>pt.net),h,p),x=yr=>p.l+(yr/pts[pts.length-1].year)*(w-p.l-p.r);
+  grid(ctx,w,h,p,s);
+  ctx.fillStyle='rgba(74,222,128,.10)';ctx.beginPath();pts.forEach((pt,i)=>{const xx=x(pt.year),yy=s.y(pt.net);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});ctx.lineTo(x(pts[pts.length-1].year),s.y(0));ctx.lineTo(x(0),s.y(0));ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#4ade80';ctx.lineWidth=2;ctx.beginPath();pts.forEach((pt,i)=>{const xx=x(pt.year),yy=s.y(pt.net);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});ctx.stroke();
+  pts.forEach(pt=>{const xx=x(pt.year),yy=s.y(pt.net),pos=pt.net>=0;ctx.fillStyle=pos?'#4ade80':'#f87171';ctx.beginPath();ctx.arc(xx,yy,3,0,Math.PI*2);ctx.fill();ctx.textAlign='center';ctx.font='600 10px JetBrains Mono, monospace';ctx.fillText(moneyK(pt.net),xx,Math.max(12,Math.min(h-22,yy+(pos?-10:16))));ctx.fillStyle='#4a5568';ctx.font='10px JetBrains Mono, monospace';ctx.fillText(String(pt.year),xx,h-12);});
+}
+function drawMomentum(pts){
+  const vals=pts.map((pt,i)=>i?pt.net-pts[i-1].net:pt.net),{ctx,w,h,p}=chartCtx('momentumChart'),s=scale(vals,h,p),step=(w-p.l-p.r)/Math.max(1,vals.length),barW=Math.min(48,Math.max(22,step*.56)),zero=s.y(0);
+  grid(ctx,w,h,p,s);
+  vals.forEach((val,i)=>{const xx=p.l+step*i+step/2,yy=s.y(val),pos=val>=0,top=Math.min(yy,zero),height=Math.max(2,Math.abs(zero-yy));ctx.fillStyle=pos?'rgba(74,222,128,.22)':'rgba(248,113,113,.22)';ctx.fillRect(xx-barW/2,top,barW,height);ctx.strokeStyle=pos?'#4ade80':'#f87171';ctx.strokeRect(xx-barW/2,top,barW,height);ctx.fillStyle=pos?'#4ade80':'#f87171';ctx.textAlign='center';ctx.font='600 10px JetBrains Mono, monospace';ctx.fillText(moneyK(val),xx,Math.max(12,Math.min(h-22,yy+(pos?-8:16))));ctx.fillStyle='#4a5568';ctx.font='10px JetBrains Mono, monospace';ctx.fillText(i?'Y'+i:'Now',xx,h-12);});
+}
+function drawWaterfall(d,r){
+  const items=[['Invest',r.fv],['New eq',r.nEq],['Avoid',r.curOpsT+r.curTotP+r.curRBal],['Old car',-r.oldEnd],['New cost',-(r.newOpsT+r.totP)],['Fees',-(d.txC+d.upfrontCash)],['Tax',r.taxBen]];
+  let running=0;const runs=[0];items.forEach(it=>{running+=it[1];runs.push(running);});
+  const {ctx,w,h,p}=chartCtx('waterfallChart'),s=scale(runs,h,p),step=(w-p.l-p.r)/items.length,barW=Math.min(42,Math.max(18,step*.62));
+  grid(ctx,w,h,p,s);
+  items.forEach((it,i)=>{const start=runs[i],end=runs[i+1],xx=p.l+step*i+step/2,y1=s.y(start),y2=s.y(end),top=Math.min(y1,y2),height=Math.max(2,Math.abs(y2-y1)),pos=it[1]>=0;ctx.fillStyle=pos?'rgba(74,144,217,.25)':'rgba(245,158,11,.22)';ctx.fillRect(xx-barW/2,top,barW,height);ctx.strokeStyle=pos?'#4a90d9':'#f59e0b';ctx.strokeRect(xx-barW/2,top,barW,height);if(i<items.length-1){ctx.strokeStyle='#2a3348';ctx.beginPath();ctx.moveTo(xx+barW/2,s.y(end));ctx.lineTo(p.l+step*(i+1)+step/2-barW/2,s.y(end));ctx.stroke();}ctx.fillStyle=pos?'#4a90d9':'#f59e0b';ctx.textAlign='center';ctx.font='600 9px JetBrains Mono, monospace';ctx.fillText(moneyK(it[1]),xx,Math.max(12,Math.min(h-24,top-5)));ctx.fillStyle='#4a5568';ctx.font='9px JetBrains Mono, monospace';ctx.fillText(it[0],xx,h-12);});
+}
+function drawCharts(d,r,pts){drawAdvantage(pts);drawMomentum(pts);drawWaterfall(d,r);}
 
 function calc(){
   const d=getInputs(),y=d.y,r=projectAt(d,y),pts=buildSeries(d);
@@ -457,7 +494,7 @@ function calc(){
   const nEl=$('r_net');nEl.textContent=fmtS(Math.round(r.net));nEl.className='value '+(r.net>=0?'positive':'negative');$('r_sub').textContent='model estimate over '+y+'yr · '+fmt(d.invested)+' invested @ '+d.iR.toFixed(0)+'%';
   $('r_keepValue').textContent=fmtS(Math.round(r.oldEnd));$('r_keepBalance').textContent='-'+fmt(Math.round(r.curRBal));$('r_keepOps').textContent='-'+fmt(Math.round(r.curOpsT));$('r_keepPmts').textContent='-'+fmt(Math.round(r.curTotP));$('r_keepPos').textContent=fmtS(Math.round(r.keepW));$('r_keepPos').className='bk-val '+(r.keepW>=0?'pos':'neg');
   $('r_fv').textContent=fmtS(Math.round(r.fv));$('r_newOps').textContent='-'+fmt(Math.round(r.newOpsT));$('r_principal').textContent='-'+fmt(Math.round(r.prinPaid));$('r_txCosts').textContent='-'+fmt(Math.round(d.txC));$('r_negEquity').textContent='-'+fmt(Math.round(d.negEquity));$('r_negRow').className='bk-row warn '+(d.negEquity>0?'':'hidden');$('r_cashNeeded').textContent='-'+fmt(Math.round(d.upfrontCash));$('r_cashRow').className='bk-row warn '+(d.upfrontCash>0?'':'hidden');$('r_tax').textContent=fmtS(Math.round(r.taxBen));$('r_equity').textContent=fmtS(Math.round(r.nEq));$('r_equity').className='bk-val '+(r.nEq>=0?'pos':'neg');$('r_interest').textContent='-'+fmt(Math.round(r.intPaid));$('r_switchPos').textContent=fmtS(Math.round(r.switchW));$('r_switchPos').className='bk-val '+(r.switchW>=0?'pos':'neg');$('r_monthly').textContent=fmtMo(Math.abs(Math.round(r.effectiveMonthly)));$('r_monthly').className='bk-val '+(r.effectiveMonthly<=0?'pos':'neg');
-  $('chartBreakEven').textContent=breakEvenText(pts);drawChart(pts);
+  $('chartBreakEven').textContent=breakEvenText(pts);$('momentumSub').textContent='Yearly change in advantage';$('waterfallSub').textContent='Drivers of '+fmtS(Math.round(r.net));drawCharts(d,r,pts);
   return {inputs:d,result:r,points:pts};
 }
 
