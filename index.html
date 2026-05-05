@@ -98,8 +98,7 @@
   .chart-canvas { width: 100%; height: 220px; display: block; background: #0a0f1a; border: 1px solid #1a2235; border-radius: 8px; }
   .chart-legend { display: flex; gap: 14px; margin-top: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #6b7a8d; }
   .chart-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-  .chart-dot.keep { background: #4a90d9; }
-  .chart-dot.switch { background: #4ade80; }
+  .chart-dot.delta { background: #4ade80; }
   .note { font-size: 10px; color: #3a4558; text-align: center; margin-top: 12px; line-height: 1.6; }
 </style>
 </head>
@@ -362,13 +361,12 @@
 
   <div class="cost-card chart-wrap">
     <div class="chart-head">
-      <div class="section-title purple" style="margin:0">Net Worth Over Time</div>
+      <div class="section-title purple" style="margin:0">Net Position Change Over Time</div>
       <div class="chart-sub" id="chartBreakEven"></div>
     </div>
     <canvas class="chart-canvas" id="netChart"></canvas>
     <div class="chart-legend">
-      <span><span class="chart-dot keep"></span>Keep</span>
-      <span><span class="chart-dot switch"></span>Switch</span>
+      <span><span class="chart-dot delta"></span>Switch minus keep</span>
     </div>
   </div>
 
@@ -424,14 +422,30 @@ function drawChart(pts){
   const canvas=$('netChart'),ctx=canvas.getContext('2d'),rect=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1;
   canvas.width=Math.max(1,Math.round(rect.width*ratio));canvas.height=Math.max(1,Math.round(rect.height*ratio));ctx.setTransform(ratio,0,0,ratio,0,0);
   const w=rect.width,h=rect.height,p={l:52,r:12,t:18,b:34};ctx.clearRect(0,0,w,h);
-  const vals=pts.flatMap(pt=>[pt.keepW,pt.switchW,0]);let min=Math.min(...vals),max=Math.max(...vals);if(min===max){min-=1000;max+=1000;}const pad=(max-min)*0.12;min-=pad;max+=pad;
+  const vals=pts.map(pt=>pt.net).concat(0);let min=Math.min(...vals),max=Math.max(...vals);if(min===max){min-=1000;max+=1000;}const pad=(max-min)*0.18;min-=pad;max+=pad;
   const x=yr=>p.l+(yr/pts[pts.length-1].year)*(w-p.l-p.r),y=v=>p.t+(max-v)/(max-min)*(h-p.t-p.b);
   ctx.font='10px JetBrains Mono, monospace';ctx.lineWidth=1;ctx.strokeStyle='#1a2235';ctx.fillStyle='#4a5568';
   for(let i=0;i<=4;i++){const val=min+(max-min)*i/4,yy=y(val);ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText((val<0?'-':'')+'$'+Math.round(Math.abs(val)/1000)+'k',8,yy+3);}
-  ctx.strokeStyle='#2a3348';ctx.beginPath();ctx.moveTo(p.l,y(0));ctx.lineTo(w-p.r,y(0));ctx.stroke();
+  const zeroY=y(0);
+  ctx.strokeStyle='#2a3348';ctx.beginPath();ctx.moveTo(p.l,zeroY);ctx.lineTo(w-p.r,zeroY);ctx.stroke();
   pts.forEach(pt=>{ctx.fillStyle='#4a5568';ctx.fillText(String(pt.year),x(pt.year)-3,h-12);});
-  function line(key,color){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();pts.forEach((pt,i)=>{const xx=x(pt.year),yy=y(pt[key]);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});ctx.stroke();pts.forEach(pt=>{ctx.fillStyle=color;ctx.beginPath();ctx.arc(x(pt.year),y(pt[key]),3,0,Math.PI*2);ctx.fill();});}
-  line('keepW','#4a90d9');line('switchW','#4ade80');
+  const step=(w-p.l-p.r)/Math.max(1,pts.length-1),barW=Math.min(42,Math.max(18,step*.42));
+  pts.forEach(pt=>{
+    const xx=x(pt.year),yy=y(pt.net),top=Math.min(yy,zeroY),height=Math.max(2,Math.abs(zeroY-yy));
+    const pos=pt.net>=0,color=pos?'#4ade80':'#f87171',fill=pos?'rgba(74,222,128,.18)':'rgba(248,113,113,.18)';
+    ctx.fillStyle=fill;ctx.fillRect(xx-barW/2,top,barW,height);
+    ctx.strokeStyle=color;ctx.lineWidth=1;ctx.strokeRect(xx-barW/2,top,barW,height);
+  });
+  ctx.strokeStyle='#4ade80';ctx.lineWidth=2;ctx.beginPath();
+  pts.forEach((pt,i)=>{const xx=x(pt.year),yy=y(pt.net);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});
+  ctx.stroke();
+  pts.forEach(pt=>{
+    const xx=x(pt.year),yy=y(pt.net),pos=pt.net>=0,label=fmtS(Math.round(pt.net/1000)*1000).replace(',000','k');
+    ctx.fillStyle=pos?'#4ade80':'#f87171';ctx.beginPath();ctx.arc(xx,yy,3,0,Math.PI*2);ctx.fill();
+    ctx.textAlign='center';ctx.font='600 10px JetBrains Mono, monospace';
+    ctx.fillText(label,xx,Math.max(12,Math.min(h-22,yy+(pos?-10:16))));
+  });
+  ctx.textAlign='left';
 }
 
 function calc(){
