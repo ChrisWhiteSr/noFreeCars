@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>No Free Car</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0a0f1a;
+    color: #c8d0de;
+    padding: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 540px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 700; color: #f0f4f8; margin-bottom: 4px; letter-spacing: -0.5px; }
+  .tagline { font-size: 11px; color: #4a5568; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1.5px; }
+  .premise { border-left: 2px solid #4a90d9; padding: 10px 0 10px 14px; margin-bottom: 20px; color: #9aa7ba; font-size: 12px; line-height: 1.65; background: linear-gradient(90deg, rgba(74,144,217,.08), transparent 70%); }
+  .premise strong { color: #e2e8f0; font-weight: 600; }
+  .premise em { color: #4ade80; font-style: normal; }
+  .section { border: 1px solid #1a2235; border-radius: 8px; padding: 16px; margin-bottom: 16px; background: #0d1424; }
+  .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+  .section-title.blue { color: #4a90d9; }
+  .section-title.green { color: #4ade80; }
+  .section-title.amber { color: #f59e0b; }
+  .section-title.purple { color: #a78bfa; }
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  label { font-size: 12px; color: #8892a4; }
+  .field-val { font-size: 13px; font-weight: 600; min-width: 70px; text-align: right; }
+  .field-val.hard { color: #e2e8f0; }
+  .field-val.soft { color: #f59e0b; }
+  input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: #1a2235; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid #0a0f1a; }
+  input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid #0a0f1a; }
+  input[type="range"].hard-slider::-webkit-slider-thumb { background: #4a90d9; }
+  input[type="range"].hard-slider::-moz-range-thumb { background: #4a90d9; }
+  input[type="range"].soft-slider::-webkit-slider-thumb { background: #f59e0b; }
+  input[type="range"].soft-slider::-moz-range-thumb { background: #f59e0b; }
+  .scenario-btns { display: flex; gap: 4px; margin-top: 6px; }
+  .scenario-btn { flex: 1; padding: 6px 4px; font-family: inherit; font-size: 10px; font-weight: 400; background: transparent; color: #4a5568; border: 1px solid #1a2235; border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.15s; }
+  .scenario-btn.active { background: #1a2235; color: #f59e0b; font-weight: 600; border-color: #f59e0b; }
+  .fuel-toggle { display: flex; gap: 4px; margin-bottom: 14px; }
+  .fuel-toggle button { flex: 1; padding: 8px; font-family: inherit; font-size: 11px; font-weight: 400; background: transparent; color: #4a5568; border: 1px solid #1a2235; border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.15s; }
+  .fuel-toggle button.active { background: #1a2235; color: #4a90d9; font-weight: 600; border-color: #4a90d9; }
+  .hidden { display: none; }
+  .legend { display: flex; gap: 16px; margin-bottom: 20px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #4a5568; }
+  .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .legend-dot.hard { background: #4a90d9; }
+  .legend-dot.soft { background: #f59e0b; }
+  .save-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .save-row input { flex: 1; min-width: 0; padding: 9px 10px; font-family: inherit; font-size: 12px; color: #e2e8f0; background: #0a0f1a; border: 1px solid #1a2235; border-radius: 4px; outline: none; }
+  .save-row input:focus { border-color: #4a90d9; }
+  .save-row button, .saved-card button { font-family: inherit; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0; background: #162040; border: 1px solid #4a90d9; border-radius: 4px; padding: 8px 10px; cursor: pointer; }
+  .saved-list { display: grid; gap: 8px; }
+  .saved-empty { font-size: 11px; color: #4a5568; }
+  .saved-card { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 10px; border: 1px solid #1a2235; border-radius: 6px; background: #0a0f1a; }
+  .saved-name { color: #e2e8f0; font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .saved-meta { color: #6b7a8d; font-size: 10px; }
+  .saved-actions { display: flex; gap: 4px; }
+  .saved-card button.delete { color: #f87171; background: transparent; border-color: #3a1f2a; }
+  .cost-card { border: 1px solid #1a2235; border-radius: 8px; padding: 16px; margin-bottom: 16px; background: #0d1424; }
+  .cost-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
+  .cost-row .cl { color: #6b7a8d; }
+  .cost-row .cv { font-weight: 600; }
+  .cost-row .cv.hard { color: #e2e8f0; }
+  .cost-row .cv.soft { color: #f59e0b; }
+  .cost-row.total { border-top: 1px solid #1a2235; margin-top: 6px; padding-top: 8px; font-size: 13px; }
+  .cost-row.total .cl { color: #e2e8f0; font-weight: 600; }
+  .cost-row.total .cv { color: #e2e8f0; }
+  .tag { font-size: 9px; padding: 1px 4px; border-radius: 2px; margin-left: 6px; vertical-align: middle; }
+  .tag-calc { background: #162040; color: #4a90d9; }
+  .tag-est { background: #2a2010; color: #f59e0b; }
+  .results { background: linear-gradient(135deg, #0d1f1a 0%, #0d1424 100%); border: 1px solid #1a3a2a; border-radius: 10px; padding: 20px 16px; margin-bottom: 16px; }
+  .big-number { text-align: center; margin-bottom: 16px; }
+  .big-number .label { font-size: 10px; color: #5a9a7a; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
+  .big-number .value { font-size: 36px; font-weight: 700; line-height: 1; }
+  .big-number .value.positive { color: #4ade80; }
+  .big-number .value.negative { color: #f87171; }
+  .big-number .sub { font-size: 11px; color: #4a5568; margin-top: 6px; }
+  .bk-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12px; }
+  .bk-row .bk-label { color: #6b7a8d; }
+  .bk-row .bk-val { font-weight: 600; }
+  .bk-row .bk-val.pos { color: #4ade80; }
+  .bk-row .bk-val.neg { color: #f87171; }
+  .bk-row.total { border-top: 1px solid #1a2a22; margin-top: 6px; padding-top: 8px; font-size: 13px; }
+  .bk-row.total .bk-label { color: #c8d0de; font-weight: 600; }
+  .bk-row.warn .bk-label, .bk-row.warn .bk-val { color: #f59e0b; }
+  .divider { height: 1px; background: #1a2235; margin: 4px 0; }
+  .chart-wrap { margin-bottom: 16px; }
+  .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .chart-sub { color: #6b7a8d; font-size: 10px; text-align: right; }
+  .chart-canvas { width: 100%; height: 220px; display: block; background: #0a0f1a; border: 1px solid #1a2235; border-radius: 8px; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #6b7a8d; }
+  .chart-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  .chart-dot.keep { background: #4a90d9; }
+  .chart-dot.switch { background: #4ade80; }
+  .note { font-size: 10px; color: #3a4558; text-align: center; margin-top: 12px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>No Free Car</h1>
+  <p class="tagline">What your next car actually costs</p>
+  <p class="premise"><strong>Your car ties up capital.</strong> This calculator compares keeping it against selling, investing the freed equity, and driving something else, then shows the wealth gap over time so you can see whether the switch ever becomes <em>effectively free</em>.</p>
+  <div class="legend">
+    <span><span class="legend-dot hard"></span>Calculated</span>
+    <span><span class="legend-dot soft"></span>Estimated</span>
+  </div>
+
+  <div class="section">
+    <div class="section-title purple">Saved Scenarios</div>
+    <div class="save-row">
+      <input type="text" id="scenarioName" maxlength="48" placeholder="Scenario name">
+      <button onclick="saveScenario()">Save</button>
+    </div>
+    <div class="saved-list" id="savedList"></div>
+  </div>
+
+  <!-- CURRENT CAR -->
+  <div class="section">
+    <div class="section-title blue">Current Car</div>
+    <div class="field">
+      <div class="field-row"><label>Sale / trade value</label><span class="field-val hard" id="v_curVal"></span></div>
+      <input type="range" class="hard-slider" id="curVal" min="5000" max="80000" step="500" value="33000">
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Loan balance</label><span class="field-val hard" id="v_curLoan"></span></div>
+      <input type="range" class="hard-slider" id="curLoan" min="0" max="60000" step="500" value="0">
+    </div>
+    <div class="field">
+      <div class="field-row"><label>APR %</label><span class="field-val hard" id="v_curRate"></span></div>
+      <input type="range" class="hard-slider" id="curRate" min="0" max="12" step="0.1" value="4.9">
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Remaining term</label><span class="field-val hard" id="v_curTerm"></span></div>
+      <input type="range" class="hard-slider" id="curTerm" min="12" max="84" step="12" value="36">
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Annual miles</label><span class="field-val hard" id="v_curMiles"></span></div>
+      <input type="range" class="hard-slider" id="curMiles" min="3000" max="30000" step="1000" value="12000">
+    </div>
+
+    <div class="fuel-toggle" id="curFuelToggle">
+      <button class="active" onclick="setCurFuel('gas')">Gas</button>
+      <button onclick="setCurFuel('ev')">EV</button>
+    </div>
+    <div id="curGasFields">
+      <div class="field">
+        <div class="field-row"><label>MPG (combined)</label><span class="field-val hard" id="v_curMpg"></span></div>
+        <input type="range" class="hard-slider" id="curMpg" min="10" max="55" step="1" value="20">
+      </div>
+      <div class="field">
+        <div class="field-row"><label>Gas $/gal</label><span class="field-val hard" id="v_curGasPrice"></span></div>
+        <input type="range" class="hard-slider" id="curGasPrice" min="2.00" max="6.00" step="0.10" value="3.50">
+      </div>
+    </div>
+    <div id="curEvFields" class="hidden">
+      <div class="field">
+        <div class="field-row"><label>kWh / 100 mi</label><span class="field-val hard" id="v_curKwh"></span></div>
+        <input type="range" class="hard-slider" id="curKwh" min="20" max="45" step="1" value="28">
+      </div>
+      <div class="field">
+        <div class="field-row"><label>$/kWh</label><span class="field-val hard" id="v_curElecRate"></span></div>
+        <input type="range" class="hard-slider" id="curElecRate" min="0.05" max="0.40" step="0.01" value="0.15">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-row"><label>Insurance / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_curIns"></span></div>
+      <input type="range" class="soft-slider" id="curIns" min="50" max="500" step="10" value="180">
+      <div class="scenario-btns">
+        <button class="scenario-btn" onclick="sp('curIns',100,this)">Low</button>
+        <button class="scenario-btn active" onclick="sp('curIns',180,this)">Typical</button>
+        <button class="scenario-btn" onclick="sp('curIns',280,this)">High</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Maintenance / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_curMaint"></span></div>
+      <input type="range" class="soft-slider" id="curMaint" min="0" max="500" step="10" value="170">
+      <div class="scenario-btns">
+        <button class="scenario-btn" onclick="sp('curMaint',80,this)">Optimistic</button>
+        <button class="scenario-btn active" onclick="sp('curMaint',170,this)">Realistic</button>
+        <button class="scenario-btn" onclick="sp('curMaint',300,this)">Worst case</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW CAR -->
+  <div class="section">
+    <div class="section-title green">New Car — Finance</div>
+    <div class="field">
+      <div class="field-row"><label>Purchase price</label><span class="field-val hard" id="v_newPrice"></span></div>
+      <input type="range" class="hard-slider" id="newPrice" min="15000" max="120000" step="500" value="35000">
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Down payment</label><span class="field-val hard" id="v_downPay"></span></div>
+      <input type="range" class="hard-slider" id="downPay" min="0" max="50000" step="500" value="0">
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Transaction costs <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_txCosts"></span></div>
+      <input type="range" class="soft-slider" id="txCosts" min="0" max="10000" step="250" value="2500">
+      <div class="scenario-btns">
+        <button class="scenario-btn" onclick="sp('txCosts',0,this)">None</button>
+        <button class="scenario-btn active" onclick="sp('txCosts',2500,this)">Typical</button>
+        <button class="scenario-btn" onclick="sp('txCosts',5000,this)">High</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-row"><label>APR %</label><span class="field-val hard" id="v_newRate"></span></div>
+      <input type="range" class="hard-slider" id="newRate" min="0" max="12" step="0.1" value="3.9">
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Term</label><span class="field-val hard" id="v_newTerm"></span></div>
+      <input type="range" class="hard-slider" id="newTerm" min="24" max="84" step="12" value="60">
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title green">New Car — Fuel</div>
+    <div class="fuel-toggle" id="newFuelToggle">
+      <button class="active" onclick="setNewFuel('gas')">Gas</button>
+      <button onclick="setNewFuel('ev')">EV</button>
+    </div>
+    <div id="newGasFields">
+      <div class="field">
+        <div class="field-row"><label>MPG (combined)</label><span class="field-val hard" id="v_newMpg"></span></div>
+        <input type="range" class="hard-slider" id="newMpg" min="10" max="55" step="1" value="27">
+      </div>
+      <div class="field">
+        <div class="field-row"><label>Gas $/gal</label><span class="field-val hard" id="v_newGasPrice"></span></div>
+        <input type="range" class="hard-slider" id="newGasPrice" min="2.00" max="6.00" step="0.10" value="3.50">
+      </div>
+    </div>
+    <div id="newEvFields" class="hidden">
+      <div class="field">
+        <div class="field-row"><label>kWh / 100 mi</label><span class="field-val hard" id="v_newKwh"></span></div>
+        <input type="range" class="hard-slider" id="newKwh" min="20" max="45" step="1" value="28">
+      </div>
+      <div class="field">
+        <div class="field-row"><label>$/kWh</label><span class="field-val hard" id="v_newElecRate"></span></div>
+        <input type="range" class="hard-slider" id="newElecRate" min="0.05" max="0.40" step="0.01" value="0.15">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title amber">New Car — Estimates</div>
+    <div class="field">
+      <div class="field-row"><label>Insurance / mo</label><span class="field-val soft" id="v_newIns"></span></div>
+      <input type="range" class="soft-slider" id="newIns" min="50" max="500" step="10" value="150">
+      <div class="scenario-btns">
+        <button class="scenario-btn" onclick="sp('newIns',90,this)">Low</button>
+        <button class="scenario-btn active" onclick="sp('newIns',150,this)">Typical</button>
+        <button class="scenario-btn" onclick="sp('newIns',250,this)">High</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Maintenance / mo</label><span class="field-val soft" id="v_newMaint"></span></div>
+      <input type="range" class="soft-slider" id="newMaint" min="0" max="500" step="10" value="80">
+      <div class="scenario-btns">
+        <button class="scenario-btn" onclick="sp('newMaint',40,this)">Optimistic</button>
+        <button class="scenario-btn active" onclick="sp('newMaint',80,this)">Realistic</button>
+        <button class="scenario-btn" onclick="sp('newMaint',200,this)">Worst case</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Value at end of period</label><span class="field-val soft" id="v_newResid"></span></div>
+      <input type="range" class="soft-slider" id="newResid" min="0" max="80000" step="500" value="22000">
+      <div class="scenario-btns">
+        <button class="scenario-btn" onclick="sr('heavy',this)">Heavy dep</button>
+        <button class="scenario-btn active" onclick="sr('avg',this)">Average</button>
+        <button class="scenario-btn" onclick="sr('light',this)">Light dep</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVESTMENT + TAX -->
+  <div class="section">
+    <div class="section-title purple">Investment & Tax</div>
+    <div class="field">
+      <div class="field-row"><label>S&P annual return % <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_invReturn"></span></div>
+      <input type="range" class="soft-slider" id="invReturn" min="0" max="15" step="0.5" value="8">
+      <div class="scenario-btns">
+        <button class="scenario-btn" onclick="sp('invReturn',5,this)">Bear 5%</button>
+        <button class="scenario-btn active" onclick="sp('invReturn',8,this)">Base 8%</button>
+        <button class="scenario-btn" onclick="sp('invReturn',10,this)">Bull 10%</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Business use %</label><span class="field-val hard" id="v_bizUse"></span></div>
+      <input type="range" class="hard-slider" id="bizUse" min="0" max="100" step="5" value="0">
+    </div>
+    <div class="field">
+      <div class="field-row"><label>Marginal tax rate %</label><span class="field-val hard" id="v_taxRate"></span></div>
+      <input type="range" class="hard-slider" id="taxRate" min="10" max="50" step="1" value="30">
+    </div>
+  </div>
+
+  <!-- PERIOD -->
+  <div class="section">
+    <div class="section-title blue">Analysis Period</div>
+    <div class="field">
+      <div class="field-row"><label>Years</label><span class="field-val hard" id="v_years"></span></div>
+      <input type="range" class="hard-slider" id="years" min="1" max="10" step="1" value="3">
+    </div>
+  </div>
+
+  <!-- MONTHLY BREAKDOWN -->
+  <div class="cost-card">
+    <div class="section-title blue" style="margin-bottom:10px">Monthly — Current Car</div>
+    <div class="cost-row"><span class="cl">Loan payment <span class="tag tag-calc">calc</span></span><span class="cv hard" id="c_curPmt"></span></div>
+    <div class="cost-row"><span class="cl">Fuel <span class="tag tag-calc">calc</span></span><span class="cv hard" id="c_curFuel"></span></div>
+    <div class="cost-row"><span class="cl">Insurance <span class="tag tag-est">est</span></span><span class="cv soft" id="c_curIns"></span></div>
+    <div class="cost-row"><span class="cl">Maintenance <span class="tag tag-est">est</span></span><span class="cv soft" id="c_curMaint"></span></div>
+    <div class="cost-row total"><span class="cl">Total</span><span class="cv" id="c_curTotal"></span></div>
+  </div>
+
+  <div class="cost-card">
+    <div class="section-title green" style="margin-bottom:10px">Monthly — New Car</div>
+    <div class="cost-row"><span class="cl">Loan payment <span class="tag tag-calc">calc</span></span><span class="cv hard" id="c_newPmt"></span></div>
+    <div class="cost-row"><span class="cl">Fuel <span class="tag tag-calc">calc</span></span><span class="cv hard" id="c_newFuel"></span></div>
+    <div class="cost-row"><span class="cl">Insurance <span class="tag tag-est">est</span></span><span class="cv soft" id="c_newIns"></span></div>
+    <div class="cost-row"><span class="cl">Maintenance <span class="tag tag-est">est</span></span><span class="cv soft" id="c_newMaint"></span></div>
+    <div class="cost-row total"><span class="cl">Total</span><span class="cv" id="c_newTotal"></span></div>
+  </div>
+
+  <!-- NET -->
+  <div class="results">
+    <div class="big-number">
+      <div class="label">Net position vs keeping current car</div>
+      <div class="value" id="r_net"></div>
+      <div class="sub" id="r_sub"></div>
+    </div>
+    <div class="breakdown">
+      <div class="section-title blue" style="margin:0 0 8px">Keep Current Car</div>
+      <div class="bk-row"><span class="bk-label">Car value at end</span><span class="bk-val pos" id="r_keepValue"></span></div>
+      <div class="bk-row"><span class="bk-label">Remaining loan balance</span><span class="bk-val neg" id="r_keepBalance"></span></div>
+      <div class="bk-row"><span class="bk-label">Operating costs</span><span class="bk-val neg" id="r_keepOps"></span></div>
+      <div class="bk-row"><span class="bk-label">Loan payments</span><span class="bk-val neg" id="r_keepPmts"></span></div>
+      <div class="bk-row total"><span class="bk-label">Keep position</span><span class="bk-val" id="r_keepPos"></span></div>
+      <div class="divider"></div>
+      <div class="section-title green" style="margin:10px 0 8px">Switch Cars</div>
+      <div class="bk-row"><span class="bk-label">Invested capital at end</span><span class="bk-val pos" id="r_fv"></span></div>
+      <div class="bk-row"><span class="bk-label">New car equity</span><span class="bk-val pos" id="r_equity"></span></div>
+      <div class="bk-row"><span class="bk-label">Operating costs</span><span class="bk-val neg" id="r_newOps"></span></div>
+      <div class="bk-row"><span class="bk-label">Principal paid</span><span class="bk-val neg" id="r_principal"></span></div>
+      <div class="bk-row"><span class="bk-label">Interest paid</span><span class="bk-val neg" id="r_interest"></span></div>
+      <div class="bk-row"><span class="bk-label">Transaction costs</span><span class="bk-val neg" id="r_txCosts"></span></div>
+      <div class="bk-row warn hidden" id="r_negRow"><span class="bk-label">Negative equity rolled in</span><span class="bk-val neg" id="r_negEquity"></span></div>
+      <div class="bk-row warn hidden" id="r_cashRow"><span class="bk-label">Extra upfront cash</span><span class="bk-val neg" id="r_cashNeeded"></span></div>
+      <div class="bk-row"><span class="bk-label">Tax benefit</span><span class="bk-val pos" id="r_tax"></span></div>
+      <div class="bk-row total"><span class="bk-label">Switch position</span><span class="bk-val" id="r_switchPos"></span></div>
+      <div class="bk-row total"><span class="bk-label">Effective monthly cost after offsets</span><span class="bk-val" id="r_monthly"></span></div>
+    </div>
+  </div>
+
+  <div class="cost-card chart-wrap">
+    <div class="chart-head">
+      <div class="section-title purple" style="margin:0">Net Worth Over Time</div>
+      <div class="chart-sub" id="chartBreakEven"></div>
+    </div>
+    <canvas class="chart-canvas" id="netChart"></canvas>
+    <div class="chart-legend">
+      <span><span class="chart-dot keep"></span>Keep</span>
+      <span><span class="chart-dot switch"></span>Switch</span>
+    </div>
+  </div>
+
+  <p class="note">
+    <span class="legend-dot hard" style="display:inline-block"></span> calc &nbsp;
+    <span class="legend-dot soft" style="display:inline-block"></span> est<br><br>
+    Tax estimates are not tax advice; consult a tax professional.<br>
+    Investment returns shown pre-tax. Does not account for: state EV credits,<br>
+    Section 179, current-car tax deduction loss, or capital gains tax.
+  </p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let curFuelType = 'gas', newFuelType = 'gas';
+const STORE_KEY = 'nofreecar.scenarios.v1';
+const fmt = n => '$' + Math.abs(n).toLocaleString('en-US',{maximumFractionDigits:0});
+const fmtS = n => (n>=0?'+':'-') + '$' + Math.abs(n).toLocaleString('en-US',{maximumFractionDigits:0});
+const fmtMo = n => '$' + Math.abs(n).toFixed(0) + '/mo';
+const inputIds = Array.from(document.querySelectorAll('input[type="range"]')).map(el=>el.id);
+
+function pmt(p,apr,m){if(p<=0)return 0;if(apr===0)return p/m;const r=apr/100/12;return p*r*Math.pow(1+r,m)/(Math.pow(1+r,m)-1);}
+function bal(p,apr,tm,am){if(p<=0)return 0;if(apr===0)return p*(1-am/tm);const r=apr/100/12;const pm=pmt(p,apr,tm);return p*Math.pow(1+r,am)-pm*(Math.pow(1+r,am)-1)/r;}
+
+function fuelMo(type, prefix){
+  const mi = parseFloat($('curMiles').value);
+  if(type==='gas'){return(mi/parseFloat($(prefix+'Mpg').value)*parseFloat($(prefix+'GasPrice').value))/12;}
+  return(mi*parseFloat($(prefix+'Kwh').value)/100*parseFloat($(prefix+'ElecRate').value))/12;
+}
+
+function getInputs(){
+  const d={y:+$('years').value,cV:+$('curVal').value,cL:+$('curLoan').value,cR:+$('curRate').value,cT:+$('curTerm').value,cI:+$('curIns').value,cM:+$('curMaint').value,nP:+$('newPrice').value,nR:+$('newRate').value,nT:+$('newTerm').value,nI:+$('newIns').value,nM:+$('newMaint').value,nRes:+$('newResid').value,txC:+$('txCosts').value,iR:+$('invReturn').value,bU:+$('bizUse').value/100,tR:+$('taxRate').value/100,cF:fuelMo(curFuelType,'cur'),nF:fuelMo(newFuelType,'new')};
+  d.netSale=d.cV-d.cL;d.saleCash=Math.max(0,d.netSale);d.negEquity=Math.max(0,-d.netSale);
+  d.downPay=Math.min(+$('downPay').value,d.nP+d.negEquity);
+  if(+$('downPay').value!==d.downPay)$('downPay').value=d.downPay;
+  d.curPayment=pmt(d.cL,d.cR,d.cT);d.newPrincipal=Math.max(0,d.nP+d.negEquity-d.downPay);d.payment=pmt(d.newPrincipal,d.nR,d.nT);
+  d.invested=Math.max(0,d.saleCash-d.downPay);d.upfrontCash=Math.max(0,d.downPay-d.saleCash);
+  return d;
+}
+
+function residualAt(d,year){if(year<=0)return d.nP;if(d.nP<=0||d.nRes<=0)return 0;return d.nP*Math.pow(d.nRes/d.nP,year/d.y);}
+function projectAt(d,year){
+  const mo=year*12,curOpsT=(d.cF+d.cI+d.cM)*mo,newOpsT=(d.nF+d.nI+d.nM)*mo,oldEnd=d.cV*Math.pow(0.85,year);
+  const cAP=d.cL>0?Math.min(mo,d.cT):0,curTotP=d.curPayment*cAP,curRBal=mo>=d.cT?0:bal(d.cL,d.cR,d.cT,cAP);
+  const aP=Math.min(mo,d.nT),totP=d.payment*aP,rBal=mo>=d.nT?0:bal(d.newPrincipal,d.nR,d.nT,aP);
+  const prinPaid=d.newPrincipal-rBal,intPaid=totP-prinPaid,fv=d.invested*Math.pow(1+d.iR/100,year),invGain=fv-d.invested,nEq=residualAt(d,year)-rBal,taxBen=(intPaid+newOpsT)*d.bU*d.tR;
+  const keepW=oldEnd-curRBal-curOpsT-curTotP,switchW=fv+nEq-totP-newOpsT-d.txC-d.upfrontCash+taxBen,net=switchW-keepW,effectiveMonthly=mo>0?(totP+newOpsT+d.txC+d.upfrontCash-nEq-taxBen-invGain)/mo:0;
+  return {year,mo,curOpsT,newOpsT,oldEnd,cAP,curTotP,curRBal,aP,totP,rBal,prinPaid,intPaid,fv,invGain,nEq,taxBen,keepW,switchW,net,effectiveMonthly};
+}
+function buildSeries(d){const pts=[];for(let yr=0;yr<=d.y;yr++)pts.push(projectAt(d,yr));return pts;}
+function breakEvenText(pts){if(!pts.length)return '';if(pts[0].net>=0)return 'Break-even: immediate';for(let i=1;i<pts.length;i++){if(pts[i].net>=0){const prev=pts[i-1],span=pts[i].net-prev.net,yr=span===0?pts[i].year:prev.year+(0-prev.net)/span;return 'Break-even: '+yr.toFixed(1)+'yr';}}return 'No break-even by '+pts[pts.length-1].year+'yr';}
+function drawChart(pts){
+  const canvas=$('netChart'),ctx=canvas.getContext('2d'),rect=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1;
+  canvas.width=Math.max(1,Math.round(rect.width*ratio));canvas.height=Math.max(1,Math.round(rect.height*ratio));ctx.setTransform(ratio,0,0,ratio,0,0);
+  const w=rect.width,h=rect.height,p={l:52,r:12,t:18,b:34};ctx.clearRect(0,0,w,h);
+  const vals=pts.flatMap(pt=>[pt.keepW,pt.switchW,0]);let min=Math.min(...vals),max=Math.max(...vals);if(min===max){min-=1000;max+=1000;}const pad=(max-min)*0.12;min-=pad;max+=pad;
+  const x=yr=>p.l+(yr/pts[pts.length-1].year)*(w-p.l-p.r),y=v=>p.t+(max-v)/(max-min)*(h-p.t-p.b);
+  ctx.font='10px JetBrains Mono, monospace';ctx.lineWidth=1;ctx.strokeStyle='#1a2235';ctx.fillStyle='#4a5568';
+  for(let i=0;i<=4;i++){const val=min+(max-min)*i/4,yy=y(val);ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText((val<0?'-':'')+'$'+Math.round(Math.abs(val)/1000)+'k',8,yy+3);}
+  ctx.strokeStyle='#2a3348';ctx.beginPath();ctx.moveTo(p.l,y(0));ctx.lineTo(w-p.r,y(0));ctx.stroke();
+  pts.forEach(pt=>{ctx.fillStyle='#4a5568';ctx.fillText(String(pt.year),x(pt.year)-3,h-12);});
+  function line(key,color){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();pts.forEach((pt,i)=>{const xx=x(pt.year),yy=y(pt[key]);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});ctx.stroke();pts.forEach(pt=>{ctx.fillStyle=color;ctx.beginPath();ctx.arc(x(pt.year),y(pt[key]),3,0,Math.PI*2);ctx.fill();});}
+  line('keepW','#4a90d9');line('switchW','#4ade80');
+}
+
+function calc(){
+  const d=getInputs(),y=d.y,r=projectAt(d,y),pts=buildSeries(d);
+  $('v_curVal').textContent=fmt(d.cV);$('v_curLoan').textContent=fmt(d.cL);$('v_curRate').textContent=d.cL>0?d.cR.toFixed(1)+'%':'n/a';$('v_curTerm').textContent=d.cL>0?d.cT+'mo':'n/a';$('v_curMiles').textContent=(+$('curMiles').value).toLocaleString();$('v_curMpg').textContent=$('curMpg').value;$('v_curGasPrice').textContent='$'+(+$('curGasPrice').value).toFixed(2);$('v_curKwh').textContent=$('curKwh').value;$('v_curElecRate').textContent='$'+(+$('curElecRate').value).toFixed(2);$('v_curIns').textContent=fmtMo(d.cI);$('v_curMaint').textContent=fmtMo(d.cM);
+  $('v_newPrice').textContent=fmt(d.nP);$('v_downPay').textContent=fmt(d.downPay);$('v_txCosts').textContent=fmt(d.txC);$('v_newRate').textContent=d.nR.toFixed(1)+'%';$('v_newTerm').textContent=d.nT+'mo';$('v_newMpg').textContent=$('newMpg').value;$('v_newGasPrice').textContent='$'+(+$('newGasPrice').value).toFixed(2);$('v_newKwh').textContent=$('newKwh').value;$('v_newElecRate').textContent='$'+(+$('newElecRate').value).toFixed(2);$('v_newIns').textContent=fmtMo(d.nI);$('v_newMaint').textContent=fmtMo(d.nM);$('v_newResid').textContent=fmt(d.nRes)+' ('+Math.round(d.nRes/d.nP*100)+'%)';
+  $('v_invReturn').textContent=d.iR.toFixed(1)+'%';$('v_bizUse').textContent=$('bizUse').value+'%';$('v_taxRate').textContent=$('taxRate').value+'%';$('v_years').textContent=y+'yr';
+  $('c_curPmt').textContent=fmtMo(d.curPayment);$('c_curFuel').textContent=fmtMo(d.cF);$('c_curIns').textContent=fmtMo(d.cI);$('c_curMaint').textContent=fmtMo(d.cM);$('c_curTotal').textContent=fmtMo(d.curPayment+d.cF+d.cI+d.cM);$('c_newPmt').textContent=fmtMo(d.payment);$('c_newFuel').textContent=fmtMo(d.nF);$('c_newIns').textContent=fmtMo(d.nI);$('c_newMaint').textContent=fmtMo(d.nM);$('c_newTotal').textContent=fmtMo(d.payment+d.nF+d.nI+d.nM);
+  const nEl=$('r_net');nEl.textContent=fmtS(Math.round(r.net));nEl.className='value '+(r.net>=0?'positive':'negative');$('r_sub').textContent='model estimate over '+y+'yr · '+fmt(d.invested)+' invested @ '+d.iR.toFixed(0)+'%';
+  $('r_keepValue').textContent=fmtS(Math.round(r.oldEnd));$('r_keepBalance').textContent='-'+fmt(Math.round(r.curRBal));$('r_keepOps').textContent='-'+fmt(Math.round(r.curOpsT));$('r_keepPmts').textContent='-'+fmt(Math.round(r.curTotP));$('r_keepPos').textContent=fmtS(Math.round(r.keepW));$('r_keepPos').className='bk-val '+(r.keepW>=0?'pos':'neg');
+  $('r_fv').textContent=fmtS(Math.round(r.fv));$('r_newOps').textContent='-'+fmt(Math.round(r.newOpsT));$('r_principal').textContent='-'+fmt(Math.round(r.prinPaid));$('r_txCosts').textContent='-'+fmt(Math.round(d.txC));$('r_negEquity').textContent='-'+fmt(Math.round(d.negEquity));$('r_negRow').className='bk-row warn '+(d.negEquity>0?'':'hidden');$('r_cashNeeded').textContent='-'+fmt(Math.round(d.upfrontCash));$('r_cashRow').className='bk-row warn '+(d.upfrontCash>0?'':'hidden');$('r_tax').textContent=fmtS(Math.round(r.taxBen));$('r_equity').textContent=fmtS(Math.round(r.nEq));$('r_equity').className='bk-val '+(r.nEq>=0?'pos':'neg');$('r_interest').textContent='-'+fmt(Math.round(r.intPaid));$('r_switchPos').textContent=fmtS(Math.round(r.switchW));$('r_switchPos').className='bk-val '+(r.switchW>=0?'pos':'neg');$('r_monthly').textContent=fmtMo(Math.abs(Math.round(r.effectiveMonthly)));$('r_monthly').className='bk-val '+(r.effectiveMonthly<=0?'pos':'neg');
+  $('chartBreakEven').textContent=breakEvenText(pts);drawChart(pts);
+  return {inputs:d,result:r,points:pts};
+}
+
+function sp(id,v,btn){$(id).value=v;btn.parentElement.querySelectorAll('.scenario-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');calc();}
+function sr(mode,btn){const p=+$('newPrice').value,y=+$('years').value;const r={heavy:.20,avg:.12,light:.07};$('newResid').value=Math.round(p*Math.pow(1-r[mode],y)/500)*500;btn.parentElement.querySelectorAll('.scenario-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');calc();}
+
+function getScenarios(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||'[]');}catch(e){return[];}}
+function setScenarios(items){localStorage.setItem(STORE_KEY,JSON.stringify(items));}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function captureState(){
+  const values={};
+  inputIds.forEach(id=>values[id]=$(id).value);
+  return {values,curFuelType,newFuelType};
+}
+function applyState(state){
+  Object.keys(state.values||{}).forEach(id=>{if($(id))$(id).value=state.values[id];});
+  setCurFuel(state.curFuelType||'gas');
+  setNewFuel(state.newFuelType||'gas');
+  calc();
+}
+function saveScenario(){
+  const current=calc();
+  const fallback='Scenario '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  const name=($('scenarioName').value||fallback).trim();
+  const item={id:Date.now().toString(36),name,createdAt:new Date().toISOString(),state:captureState(),net:current.result.net,breakEven:breakEvenText(current.points),years:current.inputs.y};
+  setScenarios([item,...getScenarios()].slice(0,12));
+  $('scenarioName').value='';
+  renderScenarios();
+}
+function loadScenario(id){
+  const item=getScenarios().find(s=>s.id===id);
+  if(item)applyState(item.state);
+}
+function deleteScenario(id){
+  setScenarios(getScenarios().filter(s=>s.id!==id));
+  renderScenarios();
+}
+function renderScenarios(){
+  const list=$('savedList'),items=getScenarios();
+  if(!items.length){list.innerHTML='<div class="saved-empty">Saved scenarios appear here for anyone using this browser.</div>';return;}
+  list.innerHTML=items.map(s=>'<div class="saved-card"><div><div class="saved-name">'+escapeHtml(s.name)+'</div><div class="saved-meta">'+fmtS(Math.round(s.net))+' over '+s.years+'yr · '+escapeHtml(s.breakEven)+'</div></div><div class="saved-actions"><button onclick="loadScenario(\''+s.id+'\')">Load</button><button class="delete" onclick="deleteScenario(\''+s.id+'\')">Del</button></div></div>').join('');
+}
+
+function setCurFuel(t){curFuelType=t;$('curGasFields').className=t==='gas'?'':'hidden';$('curEvFields').className=t==='ev'?'':'hidden';$('curFuelToggle').querySelectorAll('button').forEach((b,i)=>{b.className=((t==='gas'&&i===0)||(t==='ev'&&i===1))?'active':''});calc();}
+function setNewFuel(t){newFuelType=t;$('newGasFields').className=t==='gas'?'':'hidden';$('newEvFields').className=t==='ev'?'':'hidden';$('newFuelToggle').querySelectorAll('button').forEach((b,i)=>{b.className=((t==='gas'&&i===0)||(t==='ev'&&i===1))?'active':''});calc();}
+
+document.querySelectorAll('input[type="range"]').forEach(el=>el.addEventListener('input',calc));
+window.addEventListener('resize',calc);
+renderScenarios();
+calc();
+</script>
+</body>
+</html>
