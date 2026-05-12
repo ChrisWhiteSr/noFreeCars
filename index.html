@@ -208,10 +208,10 @@
   .hero-winner-name.lease { color: var(--lease); }
   .hero-winner-delta { font-size: 11px; color: var(--green); font-weight: 600; }
   .hero-bars { display: grid; gap: 10px; }
-  .hero-bar-row { display: grid; grid-template-columns: 220px 1fr 200px; gap: 18px; align-items: center; padding: 12px 14px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid transparent; transition: background 0.2s, border-color 0.2s, box-shadow 0.2s; position: relative; }
+  .hero-bar-row { display: grid; grid-template-columns: 250px 1fr 200px; gap: 18px; align-items: center; padding: 12px 14px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid transparent; transition: background 0.2s, border-color 0.2s, box-shadow 0.2s; position: relative; }
   .hero-bar-row.win { background: rgba(74,222,128,0.07); border-color: rgba(74,222,128,0.35); box-shadow: 0 0 24px -6px rgba(74,222,128,0.35); }
-  .hero-bar-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-  .hero-bar-name { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 7px; }
+  .hero-bar-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .hero-bar-name { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 7px; margin-bottom: 2px; }
   .hero-bar-row.keep .hero-bar-name { color: var(--keep); }
   .hero-bar-row.finance .hero-bar-name { color: var(--finance); }
   .hero-bar-row.lease .hero-bar-name { color: var(--lease); }
@@ -219,7 +219,8 @@
   .hero-dot.keep { background: var(--keep); }
   .hero-dot.finance { background: var(--finance); }
   .hero-dot.lease { background: var(--lease); }
-  .hero-bar-mo { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+  .hero-bar-mo, .hero-bar-pmt, .hero-bar-inv { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; line-height: 1.5; }
+  .hero-bar-inv { color: var(--green); }
   .hero-bar-track { position: relative; height: 26px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
   .hero-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; min-width: 2px; border-radius: 4px; transition: width 0.45s cubic-bezier(.4,.0,.2,1); }
   .hero-bar-fill.keep { background: linear-gradient(90deg, #4a5568 0%, var(--keep) 100%); }
@@ -237,7 +238,7 @@
 
   @media (max-width: 820px) {
     .hero { padding: 18px; }
-    .hero-bar-row { grid-template-columns: 150px 1fr 130px; gap: 12px; padding: 10px 12px; }
+    .hero-bar-row { grid-template-columns: 170px 1fr 130px; gap: 12px; padding: 10px 12px; }
     .hero-bar-amt { font-size: 18px; }
     .hero-winner-card { min-width: 0; flex: 1; text-align: left; }
   }
@@ -306,6 +307,8 @@
         <div class="hero-bar-meta">
           <span class="hero-bar-name"><span class="hero-dot keep"></span>Keep current</span>
           <span class="hero-bar-mo" id="hero-mo-keep">—</span>
+          <span class="hero-bar-pmt" id="hero-pmt-keep">—</span>
+          <span class="hero-bar-inv" id="hero-inv-keep">—</span>
         </div>
         <div class="hero-bar-track"><div class="hero-bar-fill keep" id="hero-fill-keep" style="width:0%"></div></div>
         <div class="hero-bar-val">
@@ -317,6 +320,8 @@
         <div class="hero-bar-meta">
           <span class="hero-bar-name"><span class="hero-dot finance"></span>Finance &amp; buy</span>
           <span class="hero-bar-mo" id="hero-mo-finance">—</span>
+          <span class="hero-bar-pmt" id="hero-pmt-finance">—</span>
+          <span class="hero-bar-inv" id="hero-inv-finance">—</span>
         </div>
         <div class="hero-bar-track"><div class="hero-bar-fill finance" id="hero-fill-finance" style="width:0%"></div></div>
         <div class="hero-bar-val">
@@ -328,6 +333,8 @@
         <div class="hero-bar-meta">
           <span class="hero-bar-name"><span class="hero-dot lease"></span>Lease + invest diff</span>
           <span class="hero-bar-mo" id="hero-mo-lease">—</span>
+          <span class="hero-bar-pmt" id="hero-pmt-lease">—</span>
+          <span class="hero-bar-inv" id="hero-inv-lease">—</span>
         </div>
         <div class="hero-bar-track"><div class="hero-bar-fill lease" id="hero-fill-lease" style="width:0%"></div></div>
         <div class="hero-bar-val">
@@ -415,19 +422,19 @@
 
       <div class="field">
         <div class="field-row"><label>Insurance / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_curIns"></span></div>
-        <input type="range" class="soft-slider" id="curIns" min="50" max="500" step="10" value="180">
+        <input type="range" class="soft-slider" id="curIns" min="50" max="500" step="10" value="100">
         <div class="scenario-btns">
-          <button class="scenario-btn" onclick="sp('curIns',100,this)">Low</button>
-          <button class="scenario-btn active" onclick="sp('curIns',180,this)">Typical</button>
+          <button class="scenario-btn active" onclick="sp('curIns',100,this)">Low</button>
+          <button class="scenario-btn" onclick="sp('curIns',180,this)">Typical</button>
           <button class="scenario-btn" onclick="sp('curIns',280,this)">High</button>
         </div>
       </div>
       <div class="field">
         <div class="field-row"><label>Maint. / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_curMaint"></span></div>
-        <input type="range" class="soft-slider" id="curMaint" min="0" max="500" step="10" value="170">
+        <input type="range" class="soft-slider" id="curMaint" min="0" max="500" step="10" value="80">
         <div class="scenario-btns">
-          <button class="scenario-btn" onclick="sp('curMaint',80,this)">Optim.</button>
-          <button class="scenario-btn active" onclick="sp('curMaint',170,this)">Realistic</button>
+          <button class="scenario-btn active" onclick="sp('curMaint',80,this)">Optim.</button>
+          <button class="scenario-btn" onclick="sp('curMaint',170,this)">Realistic</button>
           <button class="scenario-btn" onclick="sp('curMaint',300,this)">Worst</button>
         </div>
       </div>
@@ -496,19 +503,19 @@
 
       <div class="field">
         <div class="field-row"><label>Insurance / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_newIns"></span></div>
-        <input type="range" class="soft-slider" id="newIns" min="50" max="500" step="10" value="160">
+        <input type="range" class="soft-slider" id="newIns" min="50" max="500" step="10" value="100">
         <div class="scenario-btns">
-          <button class="scenario-btn" onclick="sp('newIns',100,this)">Low</button>
-          <button class="scenario-btn active" onclick="sp('newIns',160,this)">Typical</button>
+          <button class="scenario-btn active" onclick="sp('newIns',100,this)">Low</button>
+          <button class="scenario-btn" onclick="sp('newIns',160,this)">Typical</button>
           <button class="scenario-btn" onclick="sp('newIns',260,this)">High</button>
         </div>
       </div>
       <div class="field">
         <div class="field-row"><label>Maint. / mo (own) <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_newMaint"></span></div>
-        <input type="range" class="soft-slider" id="newMaint" min="0" max="500" step="10" value="80">
+        <input type="range" class="soft-slider" id="newMaint" min="0" max="500" step="10" value="40">
         <div class="scenario-btns">
-          <button class="scenario-btn" onclick="sp('newMaint',40,this)">Optim.</button>
-          <button class="scenario-btn active" onclick="sp('newMaint',80,this)">Realistic</button>
+          <button class="scenario-btn active" onclick="sp('newMaint',40,this)">Optim.</button>
+          <button class="scenario-btn" onclick="sp('newMaint',80,this)">Realistic</button>
           <button class="scenario-btn" onclick="sp('newMaint',200,this)">Worst</button>
         </div>
       </div>
@@ -522,15 +529,15 @@
         </div>
         <div class="field">
           <div class="field-row"><label>APR %</label><span class="field-val hard" id="v_newRate"></span></div>
-          <input type="range" class="hard-slider" id="newRate" min="0" max="12" step="0.1" value="6.5">
+          <input type="range" class="hard-slider" id="newRate" min="0" max="12" step="0.1" value="0.9">
         </div>
         <div class="field">
           <div class="field-row"><label>Loan term</label><span class="field-val hard" id="v_newTerm"></span></div>
           <input type="range" class="hard-slider" id="newTerm" min="24" max="84" step="12" value="60">
         </div>
         <div class="field">
-          <div class="field-row"><label>Fees / taxes <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_txCosts"></span></div>
-          <input type="range" class="soft-slider" id="txCosts" min="0" max="10000" step="250" value="2500">
+          <div class="field-row"><label>Tax + fees (MD 6% + dealer) <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_txCosts"></span></div>
+          <input type="range" class="soft-slider" id="txCosts" min="0" max="10000" step="250" value="3250">
         </div>
         <div class="field">
           <div class="field-row"><label>Resale at end <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_newResid"></span></div>
@@ -616,7 +623,7 @@
   <div class="assume-bar">
     <div class="field">
       <div class="field-row"><label>Analysis period</label><span class="field-val hard" id="v_years"></span></div>
-      <input type="range" class="hard-slider" id="years" min="1" max="10" step="1" value="3">
+      <input type="range" class="hard-slider" id="years" min="1" max="10" step="1" value="5">
     </div>
     <div class="field">
       <div class="field-row"><label>S&amp;P return % <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_invReturn"></span></div>
@@ -1035,6 +1042,13 @@ function renderHero(d, last, monthly, budget, winner, runnerUp) {
   const maxPos = Math.max(0, wealth.keep, wealth.finance, wealth.lease);
   const keepWealth = wealth.keep;
 
+  // Per-scenario payment-only (loan or lease) and monthly invested amounts
+  const mKeep = scenarioMonthly(d, 'keep');
+  const mFin = scenarioMonthly(d, 'finance');
+  const mLse = scenarioMonthly(d, 'lease');
+  const payment = { keep: mKeep.loanPmt || 0, finance: mFin.loanPmt || 0, lease: mLse.leasePmt || 0 };
+  const invested = { keep: last.keep.monthlySurplus, finance: last.finance.monthlySurplus, lease: last.lease.monthlySurplus };
+
   ['keep', 'finance', 'lease'].forEach(k => {
     const w = wealth[k];
     const pct = maxPos > 0 ? Math.max(0, w) / maxPos * 100 : 0;
@@ -1046,7 +1060,9 @@ function renderHero(d, last, monthly, budget, winner, runnerUp) {
     amt.textContent = fmtS(Math.round(w));
     amt.className = 'hero-bar-amt ' + (w >= 0 ? 'pos' : 'neg');
 
-    $('hero-mo-' + k).textContent = fmtMo(monthly[k]) + ' actual';
+    $('hero-mo-' + k).textContent = fmtMo(monthly[k]) + ' cash out';
+    $('hero-pmt-' + k).textContent = fmtMo(payment[k]) + ' payment';
+    $('hero-inv-' + k).textContent = fmtMo(invested[k]) + ' invested';
 
     const vs = $('hero-vs-' + k);
     if (k === 'keep') {
