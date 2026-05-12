@@ -619,13 +619,14 @@
           <input type="range" class="soft-slider" id="txCosts" min="0" max="10000" step="250" value="3250">
         </div>
         <div class="field">
-          <div class="field-row"><label>Resale at end <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_newResid"></span></div>
-          <input type="range" class="soft-slider" id="newResid" min="0" max="80000" step="500" value="26000">
+          <div class="field-row"><label>Annual depreciation <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_newDepr"></span></div>
+          <input type="range" class="soft-slider" id="newDepr" min="3" max="25" step="0.5" value="12">
           <div class="scenario-btns">
-            <button class="scenario-btn" onclick="sr('heavy',this)">Heavy dep</button>
-            <button class="scenario-btn active" onclick="sr('avg',this)">Average</button>
-            <button class="scenario-btn" onclick="sr('light',this)">Light dep</button>
+            <button class="scenario-btn" onclick="sp('newDepr',20,this)">Heavy 20%</button>
+            <button class="scenario-btn active" onclick="sp('newDepr',12,this)">Avg 12%</button>
+            <button class="scenario-btn" onclick="sp('newDepr',7,this)">Light 7%</button>
           </div>
+          <div class="field-row" style="margin-top:8px"><label>Resale at year <span id="v_residYr">5</span> <span class="tag tag-calc">calc</span></label><span class="field-val hard" id="v_newResid"></span></div>
         </div>
       </div>
 
@@ -960,8 +961,15 @@ function fuelMo(type, prefix) {
 }
 
 function getInputs() {
+  const y = +$('years').value;
+  const newPrice = +$('newPrice').value;
+  const newDepr = +$('newDepr').value;
+  const newResid = Math.max(0, Math.round(newPrice * Math.pow(1 - newDepr / 100, y)));
   return {
-    y: +$('years').value,
+    y,
+    newPrice,
+    newDepr,
+    newResid,
     curVal: +$('curVal').value,
     curLoan: +$('curLoan').value,
     curRate: +$('curRate').value,
@@ -970,7 +978,6 @@ function getInputs() {
     curIns: +$('curIns').value,
     curMaint: +$('curMaint').value,
     curFuel: fuelMo(curFuelType, 'cur'),
-    newPrice: +$('newPrice').value,
     newIns: +$('newIns').value,
     newMaint: +$('newMaint').value,
     newFuel: fuelMo(newFuelType, 'new'),
@@ -978,7 +985,6 @@ function getInputs() {
     newRate: +$('newRate').value,
     newTerm: +$('newTerm').value,
     txCosts: +$('txCosts').value,
-    newResid: +$('newResid').value,
     leasePmt: +$('leasePmt').value,
     leaseTerm: +$('leaseTerm').value,
     leaseDrive: +$('leaseDrive').value,
@@ -1295,7 +1301,7 @@ function renderGrowth(d, last, monthly, budget, matchMax) {
     $('g-stock-' + k).style.left = carPct.toFixed(1) + '%';
     $('g-stock-' + k).style.width = stockPct.toFixed(1) + '%';
     $('g-asset-val-' + k).textContent = fmt(Math.round(r.assets));
-    $('g-asset-car-' + k).textContent = r.carEquity > 0 ? '· car ' + fmt(Math.round(r.carEquity)) : '';
+    $('g-asset-car-' + k).textContent = r.carEquity > 0 ? '· car equity ' + fmt(Math.round(r.carEquity)) : '';
     $('g-asset-stock-' + k).textContent = r.stocks > 0 ? '· stocks ' + fmt(Math.round(r.stocks)) : '';
     $('growth-row-' + k).classList.toggle('win', k === winnerK);
   });
@@ -1331,6 +1337,8 @@ function calc() {
   $('v_newRate').textContent = d.newRate.toFixed(1) + '%';
   $('v_newTerm').textContent = d.newTerm + 'mo';
   $('v_txCosts').textContent = fmt(d.txCosts);
+  $('v_newDepr').textContent = d.newDepr.toFixed(1) + '%/yr';
+  $('v_residYr').textContent = d.y;
   $('v_newResid').textContent = fmt(d.newResid) + (d.newPrice > 0 ? ' (' + Math.round(d.newResid / d.newPrice * 100) + '%)' : '');
 
   $('v_leasePmt').textContent = fmtMo(d.leasePmt);
@@ -1469,14 +1477,6 @@ function renderBreakdown(d, last) {
 // ============ INPUTS ============
 function sp(id, v, btn) {
   $(id).value = v;
-  btn.parentElement.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  calc();
-}
-function sr(mode, btn) {
-  const p = +$('newPrice').value, y = +$('years').value;
-  const rates = { heavy: 0.20, avg: 0.12, light: 0.07 };
-  $('newResid').value = Math.round(p * Math.pow(1 - rates[mode], y) / 500) * 500;
   btn.parentElement.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   calc();
@@ -1720,7 +1720,7 @@ function exportScenarioToExcel() {
     [textCell('Monthly surplus'), textCell('max(0, budget - scenario monthly); budget = max of all scenario monthlies')],
     [textCell('Investment FV (monthly contributions)'), textCell('surplus * ((1 + r_m)^months - 1) / r_m; r_m = annual return / 12; zero return uses surplus * months')],
     [textCell('Current car value at end'), textCell('current value * 0.85^years (15% annual depreciation)')],
-    [textCell('New car resale at year y'), textCell('newPrice * (newResid / newPrice)^(y / analysisYears)')],
+    [textCell('New car resale at year y'), textCell('newPrice * (1 - annualDepr)^y; resale at horizon = newPrice * (1 - annualDepr)^analysisYears (auto-computed)')],
     [textCell('Lease end fees'), textCell('max(0, annual miles - lease cap) * years * overage $/mi')],
     [textCell('Tax benefit (finance)'), textCell('(loan interest paid + operating costs + depreciation + tax/fees upfront) * business use * marginal tax rate; depreciation = max(0, newPrice - resale at year y)')],
     [textCell('Tax benefit (lease)'), textCell('(lease payments + operating costs) * business use * marginal tax rate')],
