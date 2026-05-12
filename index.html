@@ -2,293 +2,507 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>No Free Car</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+  :root {
+    --bg: #0a0f1a;
+    --card: #0d1424;
+    --card-2: #0f1830;
+    --border: #1a2235;
+    --border-2: #2a3348;
+    --text: #c8d0de;
+    --text-hi: #f0f4f8;
+    --muted: #6b7a8d;
+    --muted-2: #4a5568;
+    --blue: #4a90d9;
+    --amber: #f59e0b;
+    --green: #4ade80;
+    --red: #f87171;
+    --purple: #a78bfa;
+    --keep: #6b7a8d;
+    --finance: #f59e0b;
+    --lease: #a78bfa;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'JetBrains Mono', monospace;
-    background: #0a0f1a;
-    color: #c8d0de;
-    padding: 16px;
+    background: radial-gradient(ellipse at top, #0e1830 0%, #0a0f1a 60%);
+    color: var(--text);
+    padding: 18px 18px 48px;
     font-size: 13px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
   }
-  .wrap { max-width: 540px; margin: 0 auto; }
-  h1 { font-size: 20px; font-weight: 700; color: #f0f4f8; margin-bottom: 4px; letter-spacing: -0.5px; }
-  .tagline { font-size: 11px; color: #4a5568; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1.5px; }
-  .premise { border-left: 2px solid #4a90d9; padding: 10px 0 10px 14px; margin-bottom: 20px; color: #9aa7ba; font-size: 12px; line-height: 1.65; background: linear-gradient(90deg, rgba(74,144,217,.08), transparent 70%); }
-  .premise strong { color: #e2e8f0; font-weight: 600; }
-  .premise em { color: #4ade80; font-style: normal; }
-  .section { border: 1px solid #1a2235; border-radius: 8px; padding: 16px; margin-bottom: 16px; background: #0d1424; }
-  .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
-  .section-title.blue { color: #4a90d9; }
-  .section-title.green { color: #4ade80; }
-  .section-title.amber { color: #f59e0b; }
-  .section-title.purple { color: #a78bfa; }
-  .field { margin-bottom: 14px; }
-  .field:last-child { margin-bottom: 0; }
-  .field-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  label { font-size: 12px; color: #8892a4; }
-  .field-val { font-size: 13px; font-weight: 600; min-width: 70px; text-align: right; }
-  .field-val.hard { color: #e2e8f0; }
-  .field-val.soft { color: #f59e0b; }
-  input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: #1a2235; outline: none; }
-  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid #0a0f1a; }
-  input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid #0a0f1a; }
-  input[type="range"].hard-slider::-webkit-slider-thumb { background: #4a90d9; }
-  input[type="range"].hard-slider::-moz-range-thumb { background: #4a90d9; }
-  input[type="range"].soft-slider::-webkit-slider-thumb { background: #f59e0b; }
-  input[type="range"].soft-slider::-moz-range-thumb { background: #f59e0b; }
-  .scenario-btns { display: flex; gap: 4px; margin-top: 6px; }
-  .scenario-btn { flex: 1; padding: 6px 4px; font-family: inherit; font-size: 10px; font-weight: 400; background: transparent; color: #4a5568; border: 1px solid #1a2235; border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.15s; }
-  .scenario-btn.active { background: #1a2235; color: #f59e0b; font-weight: 600; border-color: #f59e0b; }
-  .fuel-toggle { display: flex; gap: 4px; margin-bottom: 14px; }
-  .fuel-toggle button { flex: 1; padding: 8px; font-family: inherit; font-size: 11px; font-weight: 400; background: transparent; color: #4a5568; border: 1px solid #1a2235; border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.15s; }
-  .fuel-toggle button.active { background: #1a2235; color: #4a90d9; font-weight: 600; border-color: #4a90d9; }
-  .hidden { display: none; }
-  .legend { display: flex; gap: 16px; margin-bottom: 20px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #4a5568; }
+  .wrap { max-width: 1400px; margin: 0 auto; }
+
+  /* ============ HEADER ============ */
+  header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  h1 { font-size: 24px; font-weight: 700; color: var(--text-hi); letter-spacing: -0.5px; }
+  .tagline { font-size: 11px; color: var(--muted-2); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
+  .legend { display: flex; gap: 14px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted-2); }
   .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
-  .legend-dot.hard { background: #4a90d9; }
-  .legend-dot.soft { background: #f59e0b; }
-  .save-row { display: flex; gap: 8px; margin-bottom: 12px; }
-  .save-row input { flex: 1; min-width: 0; padding: 9px 10px; font-family: inherit; font-size: 12px; color: #e2e8f0; background: #0a0f1a; border: 1px solid #1a2235; border-radius: 4px; outline: none; }
-  .save-row input:focus { border-color: #4a90d9; }
-  .save-row button, .saved-card button { font-family: inherit; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0; background: #162040; border: 1px solid #4a90d9; border-radius: 4px; padding: 8px 10px; cursor: pointer; }
-  .saved-list { display: grid; gap: 8px; }
-  .saved-empty { font-size: 11px; color: #4a5568; }
-  .saved-card { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 10px; border: 1px solid #1a2235; border-radius: 6px; background: #0a0f1a; }
-  .saved-name { color: #e2e8f0; font-size: 12px; font-weight: 600; margin-bottom: 2px; }
-  .saved-meta { color: #6b7a8d; font-size: 10px; }
+  .legend-dot.hard { background: var(--blue); }
+  .legend-dot.soft { background: var(--amber); }
+
+  /* ============ BUILDER LAYOUT ============ */
+  .builder { display: grid; grid-template-columns: 1fr 28px 1fr 28px 1.05fr; gap: 0; align-items: stretch; margin-bottom: 22px; }
+  .step-arrow { display: flex; align-items: center; justify-content: center; color: var(--muted-2); }
+  .step-arrow svg { width: 24px; height: 24px; opacity: 0.6; }
+  .col { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 16px 16px; display: flex; flex-direction: column; }
+  .col-current { border-top: 2px solid var(--blue); }
+  .col-new { border-top: 2px solid var(--amber); }
+  .col-compare { border-top: 2px solid var(--green); background: linear-gradient(180deg, #0e1f1a 0%, #0d1424 80%); }
+
+  .col-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--card-2); border: 1px solid var(--border-2); color: var(--muted); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .col-current .step-num { color: var(--blue); border-color: var(--blue); }
+  .col-new .step-num { color: var(--amber); border-color: var(--amber); }
+  .col-compare .step-num { color: var(--green); border-color: var(--green); }
+  .col-title { font-size: 13px; font-weight: 700; color: var(--text-hi); letter-spacing: 0.5px; }
+  .col-sub { font-size: 10px; color: var(--muted-2); text-transform: uppercase; letter-spacing: 1px; }
+
+  .car-icon { display: flex; align-items: center; justify-content: center; height: 64px; margin: 4px 0 14px; }
+  .car-icon svg { height: 50px; width: auto; }
+  .car-icon.cur svg { color: var(--blue); opacity: 0.8; }
+  .car-icon.new svg { color: var(--amber); opacity: 0.9; }
+
+  /* ============ FIELDS ============ */
+  .field { margin-bottom: 11px; }
+  .field-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 8px; }
+  label { font-size: 11px; color: var(--muted); }
+  .field-val { font-size: 12px; font-weight: 600; min-width: 60px; text-align: right; }
+  .field-val.hard { color: var(--text-hi); }
+  .field-val.soft { color: var(--amber); }
+  input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: var(--border); outline: none; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 2px solid var(--bg); }
+  input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 2px solid var(--bg); }
+  input[type="range"].hard-slider::-webkit-slider-thumb { background: var(--blue); }
+  input[type="range"].hard-slider::-moz-range-thumb { background: var(--blue); }
+  input[type="range"].soft-slider::-webkit-slider-thumb { background: var(--amber); }
+  input[type="range"].soft-slider::-moz-range-thumb { background: var(--amber); }
+  .scenario-btns { display: flex; gap: 4px; margin-top: 5px; }
+  .scenario-btn { flex: 1; padding: 4px 4px; font-family: inherit; font-size: 9px; font-weight: 400; background: transparent; color: var(--muted-2); border: 1px solid var(--border); border-radius: 3px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.4px; transition: all 0.15s; }
+  .scenario-btn:hover { color: var(--muted); }
+  .scenario-btn.active { background: var(--card-2); color: var(--amber); font-weight: 600; border-color: var(--amber); }
+  .tag { font-size: 8px; padding: 1px 4px; border-radius: 2px; margin-left: 4px; vertical-align: middle; letter-spacing: 0.5px; }
+  .tag-calc { background: #162040; color: var(--blue); }
+  .tag-est { background: #2a2010; color: var(--amber); }
+
+  .fuel-toggle { display: flex; gap: 4px; margin-bottom: 11px; }
+  .fuel-toggle button { flex: 1; padding: 7px; font-family: inherit; font-size: 10px; font-weight: 400; background: transparent; color: var(--muted-2); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.6px; transition: all 0.15s; }
+  .fuel-toggle button.active { background: var(--card-2); color: var(--blue); font-weight: 600; border-color: var(--blue); }
+  .hidden { display: none !important; }
+
+  .subsection { margin-top: 10px; padding-top: 12px; border-top: 1px dashed var(--border); }
+  .subsection-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .subsection-title .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .subsection-title.finance { color: var(--finance); }
+  .subsection-title.lease { color: var(--lease); }
+  .subsection-title.finance .dot { background: var(--finance); }
+  .subsection-title.lease .dot { background: var(--lease); }
+
+  /* ============ COMPARE COLUMN ============ */
+  .verdict { background: linear-gradient(135deg, rgba(74,222,128,0.10), rgba(74,144,217,0.06)); border: 1px solid #1a3a2a; border-radius: 8px; padding: 14px 14px 12px; margin-bottom: 12px; text-align: center; }
+  .verdict-label { font-size: 10px; color: #5a9a7a; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+  .verdict-name { font-size: 22px; font-weight: 700; line-height: 1.1; color: var(--text-hi); }
+  .verdict-name.keep { color: var(--keep); }
+  .verdict-name.finance { color: var(--finance); }
+  .verdict-name.lease { color: var(--lease); }
+  .verdict-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .verdict-delta { font-size: 12px; color: var(--green); margin-top: 4px; font-weight: 600; }
+
+  .scenario-card { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; background: var(--card-2); position: relative; transition: all 0.2s; }
+  .scenario-card.win { border-color: var(--green); box-shadow: 0 0 0 1px rgba(74,222,128,0.25), 0 0 18px -4px rgba(74,222,128,0.4); background: linear-gradient(135deg, rgba(74,222,128,0.06), var(--card-2) 80%); }
+  .scenario-card .sc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .scenario-card .sc-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+  .scenario-card.sc-keep .sc-name { color: var(--keep); }
+  .scenario-card.sc-finance .sc-name { color: var(--finance); }
+  .scenario-card.sc-lease .sc-name { color: var(--lease); }
+  .scenario-card .sc-name .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .scenario-card.sc-keep .sc-name .dot { background: var(--keep); }
+  .scenario-card.sc-finance .sc-name .dot { background: var(--finance); }
+  .scenario-card.sc-lease .sc-name .dot { background: var(--lease); }
+  .scenario-card .sc-net { font-size: 18px; font-weight: 700; }
+  .scenario-card .sc-net.pos { color: var(--green); }
+  .scenario-card .sc-net.neg { color: var(--red); }
+  .scenario-card .sc-row { display: flex; justify-content: space-between; font-size: 11px; padding: 2px 0; }
+  .scenario-card .sc-row .lbl { color: var(--muted); }
+  .scenario-card .sc-row .val { color: var(--text); font-weight: 600; }
+  .win-badge { position: absolute; top: -8px; right: 10px; background: var(--green); color: #0a1a0a; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ============ ASSUMPTIONS BAR ============ */
+  .assume-bar { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 22px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  .assume-bar .field { margin-bottom: 0; }
+
+  /* ============ CHART + DETAILS ============ */
+  .chart-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 22px; }
+  .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .chart-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-hi); }
+  .chart-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .chart-canvas { width: 100%; height: 280px; display: block; background: #07101e; border: 1px solid var(--border); border-radius: 8px; }
+  .chart-legend { display: flex; gap: 18px; margin-top: 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); flex-wrap: wrap; }
+  .chart-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
+  .chart-dot.keep { background: var(--keep); }
+  .chart-dot.finance { background: var(--finance); }
+  .chart-dot.lease { background: var(--lease); }
+
+  .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 22px; }
+  .detail-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .detail-card.keep { border-top: 2px solid var(--keep); }
+  .detail-card.finance { border-top: 2px solid var(--finance); }
+  .detail-card.lease { border-top: 2px solid var(--lease); }
+  .detail-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; gap: 10px; flex-wrap: wrap; }
+  .detail-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .detail-card.keep .detail-name { color: var(--keep); }
+  .detail-card.finance .detail-name { color: var(--finance); }
+  .detail-card.lease .detail-name { color: var(--lease); }
+  .detail-monthly { font-size: 10px; color: var(--muted); text-align: right; }
+  .br-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 11px; gap: 8px; }
+  .br-row .lbl { color: var(--muted); }
+  .br-row .val { font-weight: 600; }
+  .br-row .val.pos { color: var(--green); }
+  .br-row .val.neg { color: var(--red); }
+  .br-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 7px; font-size: 12px; }
+  .br-row.total .lbl { color: var(--text-hi); font-weight: 600; }
+  .br-row.total .val { font-size: 13px; }
+
+  /* ============ SAVED SCENARIOS ============ */
+  .saved-section { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .saved-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+  .saved-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-hi); }
+  .save-row { display: flex; gap: 6px; flex: 1; max-width: 480px; }
+  .save-row input { flex: 1; min-width: 0; padding: 7px 10px; font-family: inherit; font-size: 12px; color: var(--text-hi); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; outline: none; }
+  .save-row input:focus { border-color: var(--blue); }
+  .save-row button, .saved-card button { font-family: inherit; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-hi); background: #162040; border: 1px solid var(--blue); border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+  .saved-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+  .saved-empty { font-size: 11px; color: var(--muted-2); padding: 4px 0; }
+  .saved-card { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); }
+  .saved-name { color: var(--text-hi); font-size: 11px; font-weight: 600; margin-bottom: 1px; }
+  .saved-meta { color: var(--muted-2); font-size: 9px; }
   .saved-actions { display: flex; gap: 4px; }
-  .saved-card button.delete { color: #f87171; background: transparent; border-color: #3a1f2a; }
-  .cost-card { border: 1px solid #1a2235; border-radius: 8px; padding: 16px; margin-bottom: 16px; background: #0d1424; }
-  .cost-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
-  .cost-row .cl { color: #6b7a8d; }
-  .cost-row .cv { font-weight: 600; }
-  .cost-row .cv.hard { color: #e2e8f0; }
-  .cost-row .cv.soft { color: #f59e0b; }
-  .cost-row.total { border-top: 1px solid #1a2235; margin-top: 6px; padding-top: 8px; font-size: 13px; }
-  .cost-row.total .cl { color: #e2e8f0; font-weight: 600; }
-  .cost-row.total .cv { color: #e2e8f0; }
-  .tag { font-size: 9px; padding: 1px 4px; border-radius: 2px; margin-left: 6px; vertical-align: middle; }
-  .tag-calc { background: #162040; color: #4a90d9; }
-  .tag-est { background: #2a2010; color: #f59e0b; }
-  .results { background: linear-gradient(135deg, #0d1f1a 0%, #0d1424 100%); border: 1px solid #1a3a2a; border-radius: 10px; padding: 20px 16px; margin-bottom: 16px; }
-  .big-number { text-align: center; margin-bottom: 16px; }
-  .big-number .label { font-size: 10px; color: #5a9a7a; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
-  .big-number .value { font-size: 36px; font-weight: 700; line-height: 1; }
-  .big-number .value.positive { color: #4ade80; }
-  .big-number .value.negative { color: #f87171; }
-  .big-number .sub { font-size: 11px; color: #4a5568; margin-top: 6px; }
-  .bk-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12px; }
-  .bk-row .bk-label { color: #6b7a8d; }
-  .bk-row .bk-val { font-weight: 600; }
-  .bk-row .bk-val.pos { color: #4ade80; }
-  .bk-row .bk-val.neg { color: #f87171; }
-  .bk-row.total { border-top: 1px solid #1a2a22; margin-top: 6px; padding-top: 8px; font-size: 13px; }
-  .bk-row.total .bk-label { color: #c8d0de; font-weight: 600; }
-  .bk-row.warn .bk-label, .bk-row.warn .bk-val { color: #f59e0b; }
-  .divider { height: 1px; background: #1a2235; margin: 4px 0; }
-  .chart-wrap { margin-bottom: 16px; }
-  .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-  .chart-sub { color: #6b7a8d; font-size: 10px; text-align: right; }
-  .chart-panel { margin-top: 16px; }
-  .chart-panel:first-child { margin-top: 0; }
-  .chart-canvas { width: 100%; height: 240px; display: block; background: #0a0f1a; border: 1px solid #1a2235; border-radius: 8px; }
-  .chart-legend { display: flex; gap: 14px; margin-top: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #6b7a8d; }
-  .chart-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-  .chart-dot.green { background: #4ade80; }
-  .chart-dot.red { background: #f87171; }
-  .chart-dot.blue { background: #4a90d9; }
-  .chart-dot.amber { background: #f59e0b; }
-  .note { font-size: 10px; color: #3a4558; text-align: center; margin-top: 12px; line-height: 1.6; }
+  .saved-card button.delete { color: var(--red); background: transparent; border-color: #3a1f2a; }
+
+  /* ============ EXCEL EXPORT (ported from Codex) ============ */
+  .export-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 22px; }
+  .export-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .export-copy { min-width: 0; }
+  .export-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-hi); margin-bottom: 4px; }
+  .export-sub { color: var(--muted); font-size: 10px; line-height: 1.5; }
+  .export-btn { flex: 0 0 auto; font-family: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; color: var(--text-hi); background: #162040; border: 1px solid var(--blue); border-radius: 4px; padding: 9px 14px; cursor: pointer; transition: background 0.15s; }
+  .export-btn:hover { background: #1c2a55; }
+  .export-status { margin-top: 8px; color: var(--green); font-size: 10px; min-height: 14px; }
+  .export-status.warn { color: var(--amber); }
+  @media (max-width: 480px) { .export-row { flex-direction: column; align-items: stretch; } .export-btn { width: 100%; } }
+
+  .note { font-size: 10px; color: var(--muted-2); text-align: center; margin-top: 16px; line-height: 1.7; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1100px) {
+    .builder { grid-template-columns: 1fr; gap: 16px; }
+    .step-arrow { display: none; }
+    .assume-bar { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 12px; }
+    .assume-bar { grid-template-columns: 1fr; }
+    header { flex-direction: column; align-items: flex-start; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>No Free Car</h1>
-  <p class="tagline">What your next car actually costs</p>
-  <p class="premise"><strong>Your car ties up capital.</strong> This calculator compares keeping it against selling, investing the freed equity, and driving something else, then shows the wealth gap over time so you can see whether the switch ever becomes <em>effectively free</em>.</p>
-  <div class="legend">
-    <span><span class="legend-dot hard"></span>Calculated</span>
-    <span><span class="legend-dot soft"></span>Estimated</span>
+  <header>
+    <div>
+      <h1>No Free Car</h1>
+      <div class="tagline">Lease · Buy · Keep — what actually builds wealth</div>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot hard"></span>Calculated</span>
+      <span><span class="legend-dot soft"></span>Estimated</span>
+    </div>
+  </header>
+
+  <!-- ============ SCENARIO BUILDER ============ -->
+  <div class="builder">
+
+    <!-- COLUMN 1: CURRENT CAR -->
+    <section class="col col-current">
+      <div class="col-head">
+        <div class="step-num">1</div>
+        <div>
+          <div class="col-title">Current Car</div>
+          <div class="col-sub">What you have now</div>
+        </div>
+      </div>
+      <div class="car-icon cur">
+        <svg viewBox="0 0 120 50" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 36 L14 22 Q16 16 23 16 L82 16 Q88 16 92 20 L108 28 Q114 30 114 36 L114 40 L100 40 A8 8 0 0 0 84 40 L36 40 A8 8 0 0 0 20 40 L10 40 Z"/>
+          <circle cx="28" cy="40" r="6" fill="#0a0f1a"/>
+          <circle cx="28" cy="40" r="3.5" fill="currentColor"/>
+          <circle cx="92" cy="40" r="6" fill="#0a0f1a"/>
+          <circle cx="92" cy="40" r="3.5" fill="currentColor"/>
+          <path d="M30 18 L36 24 L64 24 L60 18 Z" fill="#0a0f1a" opacity="0.5"/>
+          <path d="M68 18 L84 18 Q88 18 90 22 L84 24 L66 24 Z" fill="#0a0f1a" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="field">
+        <div class="field-row"><label>Sale / trade value</label><span class="field-val hard" id="v_curVal"></span></div>
+        <input type="range" class="hard-slider" id="curVal" min="0" max="80000" step="500" value="33000">
+      </div>
+      <div class="field">
+        <div class="field-row"><label>Loan balance</label><span class="field-val hard" id="v_curLoan"></span></div>
+        <input type="range" class="hard-slider" id="curLoan" min="0" max="60000" step="500" value="0">
+      </div>
+      <div class="field">
+        <div class="field-row"><label>APR %</label><span class="field-val hard" id="v_curRate"></span></div>
+        <input type="range" class="hard-slider" id="curRate" min="0" max="12" step="0.1" value="4.9">
+      </div>
+      <div class="field">
+        <div class="field-row"><label>Remaining term</label><span class="field-val hard" id="v_curTerm"></span></div>
+        <input type="range" class="hard-slider" id="curTerm" min="0" max="84" step="12" value="36">
+      </div>
+      <div class="field">
+        <div class="field-row"><label>Annual miles</label><span class="field-val hard" id="v_curMiles"></span></div>
+        <input type="range" class="hard-slider" id="curMiles" min="3000" max="30000" step="1000" value="12000">
+      </div>
+
+      <div class="fuel-toggle" id="curFuelToggle">
+        <button class="active" onclick="setCurFuel('gas')">Gas</button>
+        <button onclick="setCurFuel('ev')">EV</button>
+      </div>
+      <div id="curGasFields">
+        <div class="field">
+          <div class="field-row"><label>MPG (combined)</label><span class="field-val hard" id="v_curMpg"></span></div>
+          <input type="range" class="hard-slider" id="curMpg" min="10" max="55" step="1" value="20">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>Gas $/gal</label><span class="field-val hard" id="v_curGasPrice"></span></div>
+          <input type="range" class="hard-slider" id="curGasPrice" min="2.00" max="6.00" step="0.10" value="3.50">
+        </div>
+      </div>
+      <div id="curEvFields" class="hidden">
+        <div class="field">
+          <div class="field-row"><label>kWh / 100 mi</label><span class="field-val hard" id="v_curKwh"></span></div>
+          <input type="range" class="hard-slider" id="curKwh" min="20" max="45" step="1" value="28">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>$/kWh</label><span class="field-val hard" id="v_curElecRate"></span></div>
+          <input type="range" class="hard-slider" id="curElecRate" min="0.05" max="0.40" step="0.01" value="0.15">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-row"><label>Insurance / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_curIns"></span></div>
+        <input type="range" class="soft-slider" id="curIns" min="50" max="500" step="10" value="180">
+        <div class="scenario-btns">
+          <button class="scenario-btn" onclick="sp('curIns',100,this)">Low</button>
+          <button class="scenario-btn active" onclick="sp('curIns',180,this)">Typical</button>
+          <button class="scenario-btn" onclick="sp('curIns',280,this)">High</button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-row"><label>Maint. / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_curMaint"></span></div>
+        <input type="range" class="soft-slider" id="curMaint" min="0" max="500" step="10" value="170">
+        <div class="scenario-btns">
+          <button class="scenario-btn" onclick="sp('curMaint',80,this)">Optim.</button>
+          <button class="scenario-btn active" onclick="sp('curMaint',170,this)">Realistic</button>
+          <button class="scenario-btn" onclick="sp('curMaint',300,this)">Worst</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="step-arrow" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </div>
+
+    <!-- COLUMN 2: NEW CAR -->
+    <section class="col col-new">
+      <div class="col-head">
+        <div class="step-num">2</div>
+        <div>
+          <div class="col-title">New Car</div>
+          <div class="col-sub">What you're eyeing</div>
+        </div>
+      </div>
+      <div class="car-icon new">
+        <svg viewBox="0 0 120 50" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M6 36 L10 24 Q12 14 22 14 L78 14 Q86 14 92 18 L110 26 Q116 28 116 36 L116 40 L102 40 A8 8 0 0 0 86 40 L34 40 A8 8 0 0 0 18 40 L6 40 Z"/>
+          <circle cx="26" cy="40" r="6" fill="#0a0f1a"/>
+          <circle cx="26" cy="40" r="3.5" fill="currentColor"/>
+          <circle cx="94" cy="40" r="6" fill="#0a0f1a"/>
+          <circle cx="94" cy="40" r="3.5" fill="currentColor"/>
+          <path d="M26 17 L34 23 L62 23 L58 17 Z" fill="#0a0f1a" opacity="0.5"/>
+          <path d="M66 17 L82 17 Q88 17 91 21 L86 23 L64 23 Z" fill="#0a0f1a" opacity="0.5"/>
+          <rect x="106" y="22" width="4" height="3" fill="#fff5b0" opacity="0.8"/>
+        </svg>
+      </div>
+      <div class="field">
+        <div class="field-row"><label>Purchase price</label><span class="field-val hard" id="v_newPrice"></span></div>
+        <input type="range" class="hard-slider" id="newPrice" min="15000" max="120000" step="500" value="42000">
+      </div>
+
+      <div class="fuel-toggle" id="newFuelToggle">
+        <button class="active" onclick="setNewFuel('gas')">Gas</button>
+        <button onclick="setNewFuel('ev')">EV</button>
+      </div>
+      <div id="newGasFields">
+        <div class="field">
+          <div class="field-row"><label>MPG (combined)</label><span class="field-val hard" id="v_newMpg"></span></div>
+          <input type="range" class="hard-slider" id="newMpg" min="10" max="55" step="1" value="30">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>Gas $/gal</label><span class="field-val hard" id="v_newGasPrice"></span></div>
+          <input type="range" class="hard-slider" id="newGasPrice" min="2.00" max="6.00" step="0.10" value="3.50">
+        </div>
+      </div>
+      <div id="newEvFields" class="hidden">
+        <div class="field">
+          <div class="field-row"><label>kWh / 100 mi</label><span class="field-val hard" id="v_newKwh"></span></div>
+          <input type="range" class="hard-slider" id="newKwh" min="20" max="45" step="1" value="28">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>$/kWh</label><span class="field-val hard" id="v_newElecRate"></span></div>
+          <input type="range" class="hard-slider" id="newElecRate" min="0.05" max="0.40" step="0.01" value="0.15">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-row"><label>Insurance / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_newIns"></span></div>
+        <input type="range" class="soft-slider" id="newIns" min="50" max="500" step="10" value="160">
+        <div class="scenario-btns">
+          <button class="scenario-btn" onclick="sp('newIns',100,this)">Low</button>
+          <button class="scenario-btn active" onclick="sp('newIns',160,this)">Typical</button>
+          <button class="scenario-btn" onclick="sp('newIns',260,this)">High</button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-row"><label>Maint. / mo (own) <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_newMaint"></span></div>
+        <input type="range" class="soft-slider" id="newMaint" min="0" max="500" step="10" value="80">
+        <div class="scenario-btns">
+          <button class="scenario-btn" onclick="sp('newMaint',40,this)">Optim.</button>
+          <button class="scenario-btn active" onclick="sp('newMaint',80,this)">Realistic</button>
+          <button class="scenario-btn" onclick="sp('newMaint',200,this)">Worst</button>
+        </div>
+      </div>
+
+      <!-- FINANCE SECTION -->
+      <div class="subsection">
+        <div class="subsection-title finance"><span class="dot"></span>Finance &amp; Buy</div>
+        <div class="field">
+          <div class="field-row"><label>Down payment</label><span class="field-val hard" id="v_downPay"></span></div>
+          <input type="range" class="hard-slider" id="downPay" min="0" max="50000" step="500" value="3000">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>APR %</label><span class="field-val hard" id="v_newRate"></span></div>
+          <input type="range" class="hard-slider" id="newRate" min="0" max="12" step="0.1" value="6.5">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>Loan term</label><span class="field-val hard" id="v_newTerm"></span></div>
+          <input type="range" class="hard-slider" id="newTerm" min="24" max="84" step="12" value="60">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>Fees / taxes <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_txCosts"></span></div>
+          <input type="range" class="soft-slider" id="txCosts" min="0" max="10000" step="250" value="2500">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>Resale at end <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_newResid"></span></div>
+          <input type="range" class="soft-slider" id="newResid" min="0" max="80000" step="500" value="26000">
+          <div class="scenario-btns">
+            <button class="scenario-btn" onclick="sr('heavy',this)">Heavy dep</button>
+            <button class="scenario-btn active" onclick="sr('avg',this)">Average</button>
+            <button class="scenario-btn" onclick="sr('light',this)">Light dep</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEASE SECTION -->
+      <div class="subsection">
+        <div class="subsection-title lease"><span class="dot"></span>Lease</div>
+        <div class="field">
+          <div class="field-row"><label>Monthly payment</label><span class="field-val hard" id="v_leasePmt"></span></div>
+          <input type="range" class="hard-slider" id="leasePmt" min="150" max="1500" step="10" value="430">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>Lease term</label><span class="field-val hard" id="v_leaseTerm"></span></div>
+          <input type="range" class="hard-slider" id="leaseTerm" min="24" max="48" step="12" value="36">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>Drive-off (cap + fees)</label><span class="field-val hard" id="v_leaseDrive"></span></div>
+          <input type="range" class="hard-slider" id="leaseDrive" min="0" max="10000" step="250" value="2500">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>Mileage cap / yr</label><span class="field-val hard" id="v_leaseCap"></span></div>
+          <input type="range" class="hard-slider" id="leaseCap" min="7500" max="20000" step="500" value="12000">
+        </div>
+        <div class="field">
+          <div class="field-row"><label>Overage $/mile</label><span class="field-val hard" id="v_leaseOver"></span></div>
+          <input type="range" class="hard-slider" id="leaseOver" min="0.10" max="0.50" step="0.01" value="0.25">
+        </div>
+      </div>
+    </section>
+
+    <div class="step-arrow" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </div>
+
+    <!-- COLUMN 3: COMPARE -->
+    <section class="col col-compare">
+      <div class="col-head">
+        <div class="step-num">3</div>
+        <div>
+          <div class="col-title">Compare</div>
+          <div class="col-sub">Best wealth outcome wins</div>
+        </div>
+      </div>
+
+      <div class="verdict">
+        <div class="verdict-label">After <span id="v_periodYrs">3</span> years, best is</div>
+        <div class="verdict-name" id="v_winner">—</div>
+        <div class="verdict-sub" id="v_winSub">—</div>
+        <div class="verdict-delta" id="v_winDelta"></div>
+      </div>
+
+      <div class="scenario-card sc-keep" id="card-keep">
+        <div class="sc-head">
+          <div class="sc-name"><span class="dot"></span>Keep current</div>
+          <div class="sc-net" id="net-keep">—</div>
+        </div>
+        <div class="sc-row"><span class="lbl">Monthly out-of-pocket</span><span class="val" id="mo-keep">—</span></div>
+        <div class="sc-row"><span class="lbl">Car value at end</span><span class="val" id="end-keep">—</span></div>
+      </div>
+
+      <div class="scenario-card sc-finance" id="card-finance">
+        <div class="sc-head">
+          <div class="sc-name"><span class="dot"></span>Finance &amp; buy</div>
+          <div class="sc-net" id="net-finance">—</div>
+        </div>
+        <div class="sc-row"><span class="lbl">Monthly out-of-pocket</span><span class="val" id="mo-finance">—</span></div>
+        <div class="sc-row"><span class="lbl">Car value at end</span><span class="val" id="end-finance">—</span></div>
+      </div>
+
+      <div class="scenario-card sc-lease" id="card-lease">
+        <div class="sc-head">
+          <div class="sc-name"><span class="dot"></span>Lease + invest diff</div>
+          <div class="sc-net" id="net-lease">—</div>
+        </div>
+        <div class="sc-row"><span class="lbl">Monthly out-of-pocket</span><span class="val" id="mo-lease">—</span></div>
+        <div class="sc-row"><span class="lbl">Invested at S&amp;P</span><span class="val" id="inv-lease">—</span></div>
+      </div>
+    </section>
   </div>
 
-  <div class="section">
-    <div class="section-title purple">Saved Scenarios</div>
-    <div class="save-row">
-      <input type="text" id="scenarioName" maxlength="48" placeholder="Scenario name">
-      <button onclick="saveScenario()">Save</button>
-    </div>
-    <div class="saved-list" id="savedList"></div>
-  </div>
-
-  <!-- CURRENT CAR -->
-  <div class="section">
-    <div class="section-title blue">Current Car</div>
+  <!-- ============ ASSUMPTIONS BAR ============ -->
+  <div class="assume-bar">
     <div class="field">
-      <div class="field-row"><label>Sale / trade value</label><span class="field-val hard" id="v_curVal"></span></div>
-      <input type="range" class="hard-slider" id="curVal" min="5000" max="80000" step="500" value="33000">
+      <div class="field-row"><label>Analysis period</label><span class="field-val hard" id="v_years"></span></div>
+      <input type="range" class="hard-slider" id="years" min="1" max="10" step="1" value="3">
     </div>
     <div class="field">
-      <div class="field-row"><label>Loan balance</label><span class="field-val hard" id="v_curLoan"></span></div>
-      <input type="range" class="hard-slider" id="curLoan" min="0" max="60000" step="500" value="0">
-    </div>
-    <div class="field">
-      <div class="field-row"><label>APR %</label><span class="field-val hard" id="v_curRate"></span></div>
-      <input type="range" class="hard-slider" id="curRate" min="0" max="12" step="0.1" value="4.9">
-    </div>
-    <div class="field">
-      <div class="field-row"><label>Remaining term</label><span class="field-val hard" id="v_curTerm"></span></div>
-      <input type="range" class="hard-slider" id="curTerm" min="12" max="84" step="12" value="36">
-    </div>
-    <div class="field">
-      <div class="field-row"><label>Annual miles</label><span class="field-val hard" id="v_curMiles"></span></div>
-      <input type="range" class="hard-slider" id="curMiles" min="3000" max="30000" step="1000" value="12000">
-    </div>
-
-    <div class="fuel-toggle" id="curFuelToggle">
-      <button class="active" onclick="setCurFuel('gas')">Gas</button>
-      <button onclick="setCurFuel('ev')">EV</button>
-    </div>
-    <div id="curGasFields">
-      <div class="field">
-        <div class="field-row"><label>MPG (combined)</label><span class="field-val hard" id="v_curMpg"></span></div>
-        <input type="range" class="hard-slider" id="curMpg" min="10" max="55" step="1" value="20">
-      </div>
-      <div class="field">
-        <div class="field-row"><label>Gas $/gal</label><span class="field-val hard" id="v_curGasPrice"></span></div>
-        <input type="range" class="hard-slider" id="curGasPrice" min="2.00" max="6.00" step="0.10" value="3.50">
-      </div>
-    </div>
-    <div id="curEvFields" class="hidden">
-      <div class="field">
-        <div class="field-row"><label>kWh / 100 mi</label><span class="field-val hard" id="v_curKwh"></span></div>
-        <input type="range" class="hard-slider" id="curKwh" min="20" max="45" step="1" value="28">
-      </div>
-      <div class="field">
-        <div class="field-row"><label>$/kWh</label><span class="field-val hard" id="v_curElecRate"></span></div>
-        <input type="range" class="hard-slider" id="curElecRate" min="0.05" max="0.40" step="0.01" value="0.15">
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="field-row"><label>Insurance / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_curIns"></span></div>
-      <input type="range" class="soft-slider" id="curIns" min="50" max="500" step="10" value="180">
-      <div class="scenario-btns">
-        <button class="scenario-btn" onclick="sp('curIns',100,this)">Low</button>
-        <button class="scenario-btn active" onclick="sp('curIns',180,this)">Typical</button>
-        <button class="scenario-btn" onclick="sp('curIns',280,this)">High</button>
-      </div>
-    </div>
-    <div class="field">
-      <div class="field-row"><label>Maintenance / mo <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_curMaint"></span></div>
-      <input type="range" class="soft-slider" id="curMaint" min="0" max="500" step="10" value="170">
-      <div class="scenario-btns">
-        <button class="scenario-btn" onclick="sp('curMaint',80,this)">Optimistic</button>
-        <button class="scenario-btn active" onclick="sp('curMaint',170,this)">Realistic</button>
-        <button class="scenario-btn" onclick="sp('curMaint',300,this)">Worst case</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- NEW CAR -->
-  <div class="section">
-    <div class="section-title green">New Car — Finance</div>
-    <div class="field">
-      <div class="field-row"><label>Purchase price</label><span class="field-val hard" id="v_newPrice"></span></div>
-      <input type="range" class="hard-slider" id="newPrice" min="15000" max="120000" step="500" value="35000">
-    </div>
-    <div class="field">
-      <div class="field-row"><label>Down payment</label><span class="field-val hard" id="v_downPay"></span></div>
-      <input type="range" class="hard-slider" id="downPay" min="0" max="50000" step="500" value="0">
-    </div>
-    <div class="field">
-      <div class="field-row"><label>Transaction costs <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_txCosts"></span></div>
-      <input type="range" class="soft-slider" id="txCosts" min="0" max="10000" step="250" value="2500">
-      <div class="scenario-btns">
-        <button class="scenario-btn" onclick="sp('txCosts',0,this)">None</button>
-        <button class="scenario-btn active" onclick="sp('txCosts',2500,this)">Typical</button>
-        <button class="scenario-btn" onclick="sp('txCosts',5000,this)">High</button>
-      </div>
-    </div>
-    <div class="field">
-      <div class="field-row"><label>APR %</label><span class="field-val hard" id="v_newRate"></span></div>
-      <input type="range" class="hard-slider" id="newRate" min="0" max="12" step="0.1" value="3.9">
-    </div>
-    <div class="field">
-      <div class="field-row"><label>Term</label><span class="field-val hard" id="v_newTerm"></span></div>
-      <input type="range" class="hard-slider" id="newTerm" min="24" max="84" step="12" value="60">
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title green">New Car — Fuel</div>
-    <div class="fuel-toggle" id="newFuelToggle">
-      <button class="active" onclick="setNewFuel('gas')">Gas</button>
-      <button onclick="setNewFuel('ev')">EV</button>
-    </div>
-    <div id="newGasFields">
-      <div class="field">
-        <div class="field-row"><label>MPG (combined)</label><span class="field-val hard" id="v_newMpg"></span></div>
-        <input type="range" class="hard-slider" id="newMpg" min="10" max="55" step="1" value="27">
-      </div>
-      <div class="field">
-        <div class="field-row"><label>Gas $/gal</label><span class="field-val hard" id="v_newGasPrice"></span></div>
-        <input type="range" class="hard-slider" id="newGasPrice" min="2.00" max="6.00" step="0.10" value="3.50">
-      </div>
-    </div>
-    <div id="newEvFields" class="hidden">
-      <div class="field">
-        <div class="field-row"><label>kWh / 100 mi</label><span class="field-val hard" id="v_newKwh"></span></div>
-        <input type="range" class="hard-slider" id="newKwh" min="20" max="45" step="1" value="28">
-      </div>
-      <div class="field">
-        <div class="field-row"><label>$/kWh</label><span class="field-val hard" id="v_newElecRate"></span></div>
-        <input type="range" class="hard-slider" id="newElecRate" min="0.05" max="0.40" step="0.01" value="0.15">
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title amber">New Car — Estimates</div>
-    <div class="field">
-      <div class="field-row"><label>Insurance / mo</label><span class="field-val soft" id="v_newIns"></span></div>
-      <input type="range" class="soft-slider" id="newIns" min="50" max="500" step="10" value="150">
-      <div class="scenario-btns">
-        <button class="scenario-btn" onclick="sp('newIns',90,this)">Low</button>
-        <button class="scenario-btn active" onclick="sp('newIns',150,this)">Typical</button>
-        <button class="scenario-btn" onclick="sp('newIns',250,this)">High</button>
-      </div>
-    </div>
-    <div class="field">
-      <div class="field-row"><label>Maintenance / mo</label><span class="field-val soft" id="v_newMaint"></span></div>
-      <input type="range" class="soft-slider" id="newMaint" min="0" max="500" step="10" value="80">
-      <div class="scenario-btns">
-        <button class="scenario-btn" onclick="sp('newMaint',40,this)">Optimistic</button>
-        <button class="scenario-btn active" onclick="sp('newMaint',80,this)">Realistic</button>
-        <button class="scenario-btn" onclick="sp('newMaint',200,this)">Worst case</button>
-      </div>
-    </div>
-    <div class="field">
-      <div class="field-row"><label>Value at end of period</label><span class="field-val soft" id="v_newResid"></span></div>
-      <input type="range" class="soft-slider" id="newResid" min="0" max="80000" step="500" value="22000">
-      <div class="scenario-btns">
-        <button class="scenario-btn" onclick="sr('heavy',this)">Heavy dep</button>
-        <button class="scenario-btn active" onclick="sr('avg',this)">Average</button>
-        <button class="scenario-btn" onclick="sr('light',this)">Light dep</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- INVESTMENT + TAX -->
-  <div class="section">
-    <div class="section-title purple">Investment & Tax</div>
-    <div class="field">
-      <div class="field-row"><label>S&P annual return % <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_invReturn"></span></div>
+      <div class="field-row"><label>S&amp;P return % <span class="tag tag-est">est</span></label><span class="field-val soft" id="v_invReturn"></span></div>
       <input type="range" class="soft-slider" id="invReturn" min="0" max="15" step="0.5" value="8">
       <div class="scenario-btns">
         <button class="scenario-btn" onclick="sp('invReturn',5,this)">Bear 5%</button>
@@ -297,259 +511,815 @@
       </div>
     </div>
     <div class="field">
+      <div class="field-row"><label>Marginal tax %</label><span class="field-val hard" id="v_taxRate"></span></div>
+      <input type="range" class="hard-slider" id="taxRate" min="10" max="50" step="1" value="30">
+    </div>
+    <div class="field">
       <div class="field-row"><label>Business use %</label><span class="field-val hard" id="v_bizUse"></span></div>
       <input type="range" class="hard-slider" id="bizUse" min="0" max="100" step="5" value="0">
     </div>
-    <div class="field">
-      <div class="field-row"><label>Marginal tax rate %</label><span class="field-val hard" id="v_taxRate"></span></div>
-      <input type="range" class="hard-slider" id="taxRate" min="10" max="50" step="1" value="30">
+  </div>
+
+  <!-- ============ CHART ============ -->
+  <div class="chart-wrap">
+    <div class="chart-head">
+      <div>
+        <div class="chart-title">Wealth Trajectory</div>
+        <div class="chart-sub">Net position over time — each scenario invests its monthly savings vs the most expensive path</div>
+      </div>
+      <div class="chart-sub" id="chartNote"></div>
+    </div>
+    <canvas class="chart-canvas" id="wealthChart"></canvas>
+    <div class="chart-legend">
+      <span><span class="chart-dot keep"></span>Keep current</span>
+      <span><span class="chart-dot finance"></span>Finance &amp; buy</span>
+      <span><span class="chart-dot lease"></span>Lease + invest diff</span>
     </div>
   </div>
 
-  <!-- PERIOD -->
-  <div class="section">
-    <div class="section-title blue">Analysis Period</div>
-    <div class="field">
-      <div class="field-row"><label>Years</label><span class="field-val hard" id="v_years"></span></div>
-      <input type="range" class="hard-slider" id="years" min="1" max="10" step="1" value="3">
+  <!-- ============ DETAIL CARDS ============ -->
+  <div class="detail-grid">
+    <div class="detail-card keep">
+      <div class="detail-head">
+        <div class="detail-name">Keep current — breakdown</div>
+        <div class="detail-monthly" id="dm-keep"></div>
+      </div>
+      <div class="br-row"><span class="lbl">Car value at end</span><span class="val pos" id="b-keep-car"></span></div>
+      <div class="br-row"><span class="lbl">Loan balance remaining</span><span class="val neg" id="b-keep-bal"></span></div>
+      <div class="br-row"><span class="lbl">Loan payments</span><span class="val neg" id="b-keep-pmt"></span></div>
+      <div class="br-row"><span class="lbl">Operating costs</span><span class="val neg" id="b-keep-ops"></span></div>
+      <div class="br-row"><span class="lbl">Investment growth</span><span class="val pos" id="b-keep-inv"></span></div>
+      <div class="br-row total"><span class="lbl">Net position</span><span class="val" id="b-keep-tot"></span></div>
+    </div>
+
+    <div class="detail-card finance">
+      <div class="detail-head">
+        <div class="detail-name">Finance &amp; buy — breakdown</div>
+        <div class="detail-monthly" id="dm-finance"></div>
+      </div>
+      <div class="br-row"><span class="lbl">Resale value at end</span><span class="val pos" id="b-fin-car"></span></div>
+      <div class="br-row"><span class="lbl">Loan balance remaining</span><span class="val neg" id="b-fin-bal"></span></div>
+      <div class="br-row"><span class="lbl">Loan payments</span><span class="val neg" id="b-fin-pmt"></span></div>
+      <div class="br-row"><span class="lbl">Operating costs</span><span class="val neg" id="b-fin-ops"></span></div>
+      <div class="br-row"><span class="lbl">Fees / down (excess)</span><span class="val neg" id="b-fin-fees"></span></div>
+      <div class="br-row"><span class="lbl">Investment growth</span><span class="val pos" id="b-fin-inv"></span></div>
+      <div class="br-row"><span class="lbl">Tax benefit</span><span class="val pos" id="b-fin-tax"></span></div>
+      <div class="br-row total"><span class="lbl">Net position</span><span class="val" id="b-fin-tot"></span></div>
+    </div>
+
+    <div class="detail-card lease">
+      <div class="detail-head">
+        <div class="detail-name">Lease + invest — breakdown</div>
+        <div class="detail-monthly" id="dm-lease"></div>
+      </div>
+      <div class="br-row"><span class="lbl">Car value at end</span><span class="val" id="b-lse-car">—</span></div>
+      <div class="br-row"><span class="lbl">Lease payments</span><span class="val neg" id="b-lse-pmt"></span></div>
+      <div class="br-row"><span class="lbl">Drive-off</span><span class="val neg" id="b-lse-drive"></span></div>
+      <div class="br-row"><span class="lbl">Operating costs</span><span class="val neg" id="b-lse-ops"></span></div>
+      <div class="br-row"><span class="lbl">Mileage overage</span><span class="val neg" id="b-lse-over"></span></div>
+      <div class="br-row"><span class="lbl">Investment growth (S&amp;P)</span><span class="val pos" id="b-lse-inv"></span></div>
+      <div class="br-row"><span class="lbl">Tax benefit</span><span class="val pos" id="b-lse-tax"></span></div>
+      <div class="br-row total"><span class="lbl">Net position</span><span class="val" id="b-lse-tot"></span></div>
     </div>
   </div>
 
-  <!-- MONTHLY BREAKDOWN -->
-  <div class="cost-card">
-    <div class="section-title blue" style="margin-bottom:10px">Monthly — Current Car</div>
-    <div class="cost-row"><span class="cl">Loan payment <span class="tag tag-calc">calc</span></span><span class="cv hard" id="c_curPmt"></span></div>
-    <div class="cost-row"><span class="cl">Fuel <span class="tag tag-calc">calc</span></span><span class="cv hard" id="c_curFuel"></span></div>
-    <div class="cost-row"><span class="cl">Insurance <span class="tag tag-est">est</span></span><span class="cv soft" id="c_curIns"></span></div>
-    <div class="cost-row"><span class="cl">Maintenance <span class="tag tag-est">est</span></span><span class="cv soft" id="c_curMaint"></span></div>
-    <div class="cost-row total"><span class="cl">Total</span><span class="cv" id="c_curTotal"></span></div>
+  <!-- ============ EXCEL EXPORT ============ -->
+  <div class="export-card">
+    <div class="export-row">
+      <div class="export-copy">
+        <div class="export-title">Excel Export</div>
+        <div class="export-sub">All three scenarios, annual projection, formulas, and independent validation checks.</div>
+      </div>
+      <button class="export-btn" onclick="exportScenarioToExcel()">Export .xls</button>
+    </div>
+    <div class="export-status" id="exportStatus"></div>
   </div>
 
-  <div class="cost-card">
-    <div class="section-title green" style="margin-bottom:10px">Monthly — New Car</div>
-    <div class="cost-row"><span class="cl">Loan payment <span class="tag tag-calc">calc</span></span><span class="cv hard" id="c_newPmt"></span></div>
-    <div class="cost-row"><span class="cl">Fuel <span class="tag tag-calc">calc</span></span><span class="cv hard" id="c_newFuel"></span></div>
-    <div class="cost-row"><span class="cl">Insurance <span class="tag tag-est">est</span></span><span class="cv soft" id="c_newIns"></span></div>
-    <div class="cost-row"><span class="cl">Maintenance <span class="tag tag-est">est</span></span><span class="cv soft" id="c_newMaint"></span></div>
-    <div class="cost-row total"><span class="cl">Total</span><span class="cv" id="c_newTotal"></span></div>
-  </div>
-
-  <!-- NET -->
-  <div class="results">
-    <div class="big-number">
-      <div class="label">Net position vs keeping current car</div>
-      <div class="value" id="r_net"></div>
-      <div class="sub" id="r_sub"></div>
-    </div>
-    <div class="breakdown">
-      <div class="section-title blue" style="margin:0 0 8px">Keep Current Car</div>
-      <div class="bk-row"><span class="bk-label">Car value at end</span><span class="bk-val pos" id="r_keepValue"></span></div>
-      <div class="bk-row"><span class="bk-label">Remaining loan balance</span><span class="bk-val neg" id="r_keepBalance"></span></div>
-      <div class="bk-row"><span class="bk-label">Operating costs</span><span class="bk-val neg" id="r_keepOps"></span></div>
-      <div class="bk-row"><span class="bk-label">Loan payments</span><span class="bk-val neg" id="r_keepPmts"></span></div>
-      <div class="bk-row total"><span class="bk-label">Keep position</span><span class="bk-val" id="r_keepPos"></span></div>
-      <div class="divider"></div>
-      <div class="section-title green" style="margin:10px 0 8px">Switch Cars</div>
-      <div class="bk-row"><span class="bk-label">Invested capital at end</span><span class="bk-val pos" id="r_fv"></span></div>
-      <div class="bk-row"><span class="bk-label">New car equity</span><span class="bk-val pos" id="r_equity"></span></div>
-      <div class="bk-row"><span class="bk-label">Operating costs</span><span class="bk-val neg" id="r_newOps"></span></div>
-      <div class="bk-row"><span class="bk-label">Principal paid</span><span class="bk-val neg" id="r_principal"></span></div>
-      <div class="bk-row"><span class="bk-label">Interest paid</span><span class="bk-val neg" id="r_interest"></span></div>
-      <div class="bk-row"><span class="bk-label">Transaction costs</span><span class="bk-val neg" id="r_txCosts"></span></div>
-      <div class="bk-row warn hidden" id="r_negRow"><span class="bk-label">Negative equity rolled in</span><span class="bk-val neg" id="r_negEquity"></span></div>
-      <div class="bk-row warn hidden" id="r_cashRow"><span class="bk-label">Extra upfront cash</span><span class="bk-val neg" id="r_cashNeeded"></span></div>
-      <div class="bk-row"><span class="bk-label">Tax benefit</span><span class="bk-val pos" id="r_tax"></span></div>
-      <div class="bk-row total"><span class="bk-label">Switch position</span><span class="bk-val" id="r_switchPos"></span></div>
-      <div class="bk-row total"><span class="bk-label">Effective monthly cost after offsets</span><span class="bk-val" id="r_monthly"></span></div>
-    </div>
-  </div>
-
-  <div class="cost-card chart-wrap">
-    <div class="chart-panel">
-      <div class="chart-head">
-        <div class="section-title purple" style="margin:0">Cumulative Advantage</div>
-        <div class="chart-sub" id="chartBreakEven"></div>
-      </div>
-      <canvas class="chart-canvas" id="advantageChart"></canvas>
-      <div class="chart-legend">
-        <span><span class="chart-dot green"></span>Switch ahead</span>
-        <span><span class="chart-dot red"></span>Keep ahead</span>
+  <!-- ============ SAVED SCENARIOS ============ -->
+  <div class="saved-section">
+    <div class="saved-head">
+      <div class="saved-title">Saved scenarios</div>
+      <div class="save-row">
+        <input type="text" id="scenarioName" maxlength="48" placeholder="Name this scenario">
+        <button onclick="saveScenario()">Save current</button>
       </div>
     </div>
-    <div class="chart-panel">
-      <div class="chart-head">
-        <div class="section-title purple" style="margin:0">Annual Momentum</div>
-        <div class="chart-sub" id="momentumSub"></div>
-      </div>
-      <canvas class="chart-canvas" id="momentumChart"></canvas>
-      <div class="chart-legend">
-        <span><span class="chart-dot green"></span>Improves switch case</span>
-        <span><span class="chart-dot red"></span>Hurts switch case</span>
-      </div>
-    </div>
-    <div class="chart-panel">
-      <div class="chart-head">
-        <div class="section-title purple" style="margin:0">Result Drivers</div>
-        <div class="chart-sub" id="waterfallSub"></div>
-      </div>
-      <canvas class="chart-canvas" id="waterfallChart"></canvas>
-      <div class="chart-legend">
-        <span><span class="chart-dot blue"></span>Positive driver</span>
-        <span><span class="chart-dot amber"></span>Negative driver</span>
-      </div>
-    </div>
+    <div class="saved-list" id="savedList"></div>
   </div>
 
   <p class="note">
-    <span class="legend-dot hard" style="display:inline-block"></span> calc &nbsp;
-    <span class="legend-dot soft" style="display:inline-block"></span> est<br><br>
-    Tax estimates are not tax advice; consult a tax professional.<br>
-    Investment returns shown pre-tax. Does not account for: state EV credits,<br>
-    Section 179, current-car tax deduction loss, or capital gains tax.
+    Each scenario invests its monthly savings (vs the most expensive option) and any leftover sale-cash at the S&amp;P return rate. Lease assumes maintenance roughly halved by warranty coverage.<br>
+    Tax estimates are not tax advice. Investment returns shown pre-tax. Does not account for capital gains, EV credits, or Section 179.
   </p>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
 let curFuelType = 'gas', newFuelType = 'gas';
-const STORE_KEY = 'nofreecar.scenarios.v1';
-const fmt = n => '$' + Math.abs(n).toLocaleString('en-US',{maximumFractionDigits:0});
-const fmtS = n => (n>=0?'+':'-') + '$' + Math.abs(n).toLocaleString('en-US',{maximumFractionDigits:0});
+const STORE_KEY = 'nofreecar.scenarios.v2';
+const fmt = n => '$' + Math.abs(n).toLocaleString('en-US', { maximumFractionDigits: 0 });
+const fmtS = n => (n >= 0 ? '+' : '-') + '$' + Math.abs(n).toLocaleString('en-US', { maximumFractionDigits: 0 });
 const fmtMo = n => '$' + Math.abs(n).toFixed(0) + '/mo';
-const inputIds = Array.from(document.querySelectorAll('input[type="range"]')).map(el=>el.id);
+const inputIds = Array.from(document.querySelectorAll('input[type="range"]')).map(el => el.id);
 let recalcPending = false;
 
-function pmt(p,apr,m){if(p<=0)return 0;if(apr===0)return p/m;const r=apr/100/12;return p*r*Math.pow(1+r,m)/(Math.pow(1+r,m)-1);}
-function bal(p,apr,tm,am){if(p<=0)return 0;if(apr===0)return p*(1-am/tm);const r=apr/100/12;const pm=pmt(p,apr,tm);return p*Math.pow(1+r,am)-pm*(Math.pow(1+r,am)-1)/r;}
-
-function fuelMo(type, prefix){
-  const mi = parseFloat($('curMiles').value);
-  if(type==='gas'){return(mi/parseFloat($(prefix+'Mpg').value)*parseFloat($(prefix+'GasPrice').value))/12;}
-  return(mi*parseFloat($(prefix+'Kwh').value)/100*parseFloat($(prefix+'ElecRate').value))/12;
+function pmt(p, apr, m) {
+  if (p <= 0 || m <= 0) return 0;
+  if (apr === 0) return p / m;
+  const r = apr / 100 / 12;
+  return p * r * Math.pow(1 + r, m) / (Math.pow(1 + r, m) - 1);
+}
+function bal(p, apr, tm, am) {
+  if (p <= 0 || tm <= 0) return 0;
+  if (apr === 0) return Math.max(0, p * (1 - am / tm));
+  const r = apr / 100 / 12;
+  const pm = pmt(p, apr, tm);
+  return Math.max(0, p * Math.pow(1 + r, am) - pm * (Math.pow(1 + r, am) - 1) / r);
+}
+function fvLump(principal, annualRate, years) {
+  return principal * Math.pow(1 + annualRate / 100, years);
+}
+function fvAnnuity(monthly, annualRate, months) {
+  if (months <= 0) return 0;
+  const r = annualRate / 100 / 12;
+  if (r === 0) return monthly * months;
+  return monthly * ((Math.pow(1 + r, months) - 1) / r);
+}
+function fuelMo(type, prefix) {
+  const mi = +$('curMiles').value;
+  if (type === 'gas') return (mi / +$(prefix + 'Mpg').value * +$(prefix + 'GasPrice').value) / 12;
+  return (mi * +$(prefix + 'Kwh').value / 100 * +$(prefix + 'ElecRate').value) / 12;
 }
 
-function getInputs(){
-  const d={y:+$('years').value,cV:+$('curVal').value,cL:+$('curLoan').value,cR:+$('curRate').value,cT:+$('curTerm').value,cI:+$('curIns').value,cM:+$('curMaint').value,nP:+$('newPrice').value,nR:+$('newRate').value,nT:+$('newTerm').value,nI:+$('newIns').value,nM:+$('newMaint').value,nRes:+$('newResid').value,txC:+$('txCosts').value,iR:+$('invReturn').value,bU:+$('bizUse').value/100,tR:+$('taxRate').value/100,cF:fuelMo(curFuelType,'cur'),nF:fuelMo(newFuelType,'new')};
-  d.netSale=d.cV-d.cL;d.saleCash=Math.max(0,d.netSale);d.negEquity=Math.max(0,-d.netSale);
-  d.downPay=Math.min(+$('downPay').value,d.nP+d.negEquity);
-  if(+$('downPay').value!==d.downPay)$('downPay').value=d.downPay;
-  d.curPayment=pmt(d.cL,d.cR,d.cT);d.newPrincipal=Math.max(0,d.nP+d.negEquity-d.downPay);d.payment=pmt(d.newPrincipal,d.nR,d.nT);
-  d.invested=Math.max(0,d.saleCash-d.downPay);d.upfrontCash=Math.max(0,d.downPay-d.saleCash);
-  return d;
+function getInputs() {
+  return {
+    y: +$('years').value,
+    curVal: +$('curVal').value,
+    curLoan: +$('curLoan').value,
+    curRate: +$('curRate').value,
+    curTerm: +$('curTerm').value,
+    curMiles: +$('curMiles').value,
+    curIns: +$('curIns').value,
+    curMaint: +$('curMaint').value,
+    curFuel: fuelMo(curFuelType, 'cur'),
+    newPrice: +$('newPrice').value,
+    newIns: +$('newIns').value,
+    newMaint: +$('newMaint').value,
+    newFuel: fuelMo(newFuelType, 'new'),
+    downPay: +$('downPay').value,
+    newRate: +$('newRate').value,
+    newTerm: +$('newTerm').value,
+    txCosts: +$('txCosts').value,
+    newResid: +$('newResid').value,
+    leasePmt: +$('leasePmt').value,
+    leaseTerm: +$('leaseTerm').value,
+    leaseDrive: +$('leaseDrive').value,
+    leaseCap: +$('leaseCap').value,
+    leaseOver: +$('leaseOver').value,
+    invReturn: +$('invReturn').value,
+    taxRate: +$('taxRate').value / 100,
+    bizUse: +$('bizUse').value / 100,
+  };
 }
 
-function residualAt(d,year){if(year<=0)return d.nP;if(d.nP<=0||d.nRes<=0)return 0;return d.nP*Math.pow(d.nRes/d.nP,year/d.y);}
-function projectAt(d,year){
-  const mo=year*12,curOpsT=(d.cF+d.cI+d.cM)*mo,newOpsT=(d.nF+d.nI+d.nM)*mo,oldEnd=d.cV*Math.pow(0.85,year);
-  const cAP=d.cL>0?Math.min(mo,d.cT):0,curTotP=d.curPayment*cAP,curRBal=mo>=d.cT?0:bal(d.cL,d.cR,d.cT,cAP);
-  const aP=Math.min(mo,d.nT),totP=d.payment*aP,rBal=mo>=d.nT?0:bal(d.newPrincipal,d.nR,d.nT,aP);
-  const prinPaid=d.newPrincipal-rBal,intPaid=totP-prinPaid,fv=d.invested*Math.pow(1+d.iR/100,year),invGain=fv-d.invested,nEq=residualAt(d,year)-rBal,taxBen=(intPaid+newOpsT)*d.bU*d.tR;
-  const keepW=oldEnd-curRBal-curOpsT-curTotP,switchW=fv+nEq-totP-newOpsT-d.txC-d.upfrontCash+taxBen,net=switchW-keepW,effectiveMonthly=mo>0?(totP+newOpsT+d.txC+d.upfrontCash-nEq-taxBen-invGain)/mo:0;
-  return {year,mo,curOpsT,newOpsT,oldEnd,cAP,curTotP,curRBal,aP,totP,rBal,prinPaid,intPaid,fv,invGain,nEq,taxBen,keepW,switchW,net,effectiveMonthly};
-}
-function buildSeries(d){const pts=[];for(let yr=0;yr<=d.y;yr++)pts.push(projectAt(d,yr));return pts;}
-function breakEvenText(pts){if(!pts.length)return '';if(pts[0].net>=0)return 'Break-even: immediate';for(let i=1;i<pts.length;i++){if(pts[i].net>=0){const prev=pts[i-1],span=pts[i].net-prev.net,yr=span===0?pts[i].year:prev.year+(0-prev.net)/span;return 'Break-even: '+yr.toFixed(1)+'yr';}}return 'No break-even by '+pts[pts.length-1].year+'yr';}
-function moneyK(n){return fmtS(Math.round(n/1000)*1000).replace(',000','k');}
-function chartCtx(id){
-  const canvas=$(id),ctx=canvas.getContext('2d'),rect=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1;
-  canvas.width=Math.max(1,Math.round(rect.width*ratio));canvas.height=Math.max(1,Math.round(rect.height*ratio));ctx.setTransform(ratio,0,0,ratio,0,0);
-  ctx.clearRect(0,0,rect.width,rect.height);ctx.font='10px JetBrains Mono, monospace';ctx.textAlign='left';
-  return {ctx,w:rect.width,h:rect.height,p:{l:52,r:34,t:18,b:36}};
-}
-function scale(vals,h,p){
-  let min=Math.min(...vals,0),max=Math.max(...vals,0);if(min===max){min-=1000;max+=1000;}const pad=(max-min)*.16;min-=pad;max+=pad;
-  return {min,max,y:v=>p.t+(max-v)/(max-min)*(h-p.t-p.b)};
-}
-function grid(ctx,w,h,p,s){
-  ctx.lineWidth=1;ctx.strokeStyle='#1a2235';ctx.fillStyle='#4a5568';ctx.textAlign='left';
-  for(let i=0;i<=4;i++){const val=s.min+(s.max-s.min)*i/4,yy=s.y(val);ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText((val<0?'-':'')+'$'+Math.round(Math.abs(val)/1000)+'k',8,yy+3);}
-  ctx.strokeStyle='#2a3348';ctx.beginPath();ctx.moveTo(p.l,s.y(0));ctx.lineTo(w-p.r,s.y(0));ctx.stroke();
-}
-function drawAdvantage(pts){
-  const {ctx,w,h,p}=chartCtx('advantageChart'),s=scale(pts.map(pt=>pt.net),h,p),x=yr=>p.l+(yr/pts[pts.length-1].year)*(w-p.l-p.r);
-  grid(ctx,w,h,p,s);
-  ctx.fillStyle='rgba(74,222,128,.10)';ctx.beginPath();pts.forEach((pt,i)=>{const xx=x(pt.year),yy=s.y(pt.net);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});ctx.lineTo(x(pts[pts.length-1].year),s.y(0));ctx.lineTo(x(0),s.y(0));ctx.closePath();ctx.fill();
-  ctx.strokeStyle='#4ade80';ctx.lineWidth=2;ctx.beginPath();pts.forEach((pt,i)=>{const xx=x(pt.year),yy=s.y(pt.net);if(i)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);});ctx.stroke();
-  pts.forEach(pt=>{const xx=x(pt.year),yy=s.y(pt.net),pos=pt.net>=0;ctx.fillStyle=pos?'#4ade80':'#f87171';ctx.beginPath();ctx.arc(xx,yy,3,0,Math.PI*2);ctx.fill();ctx.textAlign='center';ctx.font='600 10px JetBrains Mono, monospace';ctx.fillText(moneyK(pt.net),xx,Math.max(12,Math.min(h-22,yy+(pos?-10:16))));ctx.fillStyle='#4a5568';ctx.font='10px JetBrains Mono, monospace';ctx.fillText(String(pt.year),xx,h-12);});
-}
-function drawMomentum(pts){
-  const vals=pts.map((pt,i)=>i?pt.net-pts[i-1].net:pt.net),{ctx,w,h,p}=chartCtx('momentumChart'),s=scale(vals,h,p),step=(w-p.l-p.r)/Math.max(1,vals.length),barW=Math.min(48,Math.max(22,step*.56)),zero=s.y(0);
-  grid(ctx,w,h,p,s);
-  vals.forEach((val,i)=>{const xx=p.l+step*i+step/2,yy=s.y(val),pos=val>=0,top=Math.min(yy,zero),height=Math.max(2,Math.abs(zero-yy));ctx.fillStyle=pos?'rgba(74,222,128,.22)':'rgba(248,113,113,.22)';ctx.fillRect(xx-barW/2,top,barW,height);ctx.strokeStyle=pos?'#4ade80':'#f87171';ctx.strokeRect(xx-barW/2,top,barW,height);ctx.fillStyle=pos?'#4ade80':'#f87171';ctx.textAlign='center';ctx.font='600 10px JetBrains Mono, monospace';ctx.fillText(moneyK(val),xx,Math.max(12,Math.min(h-22,yy+(pos?-8:16))));ctx.fillStyle='#4a5568';ctx.font='10px JetBrains Mono, monospace';ctx.fillText(i?'Y'+i:'Now',xx,h-12);});
-}
-function drawWaterfall(d,r){
-  const items=[['Invest',r.fv],['New eq',r.nEq],['Avoid',r.curOpsT+r.curTotP+r.curRBal],['Old car',-r.oldEnd],['New cost',-(r.newOpsT+r.totP)],['Fees',-(d.txC+d.upfrontCash)],['Tax',r.taxBen]];
-  let running=0;const runs=[0];items.forEach(it=>{running+=it[1];runs.push(running);});
-  const {ctx,w,h,p}=chartCtx('waterfallChart'),s=scale(runs,h,p),step=(w-p.l-p.r)/items.length,barW=Math.min(42,Math.max(18,step*.62));
-  grid(ctx,w,h,p,s);
-  items.forEach((it,i)=>{const start=runs[i],end=runs[i+1],xx=p.l+step*i+step/2,y1=s.y(start),y2=s.y(end),top=Math.min(y1,y2),height=Math.max(2,Math.abs(y2-y1)),pos=it[1]>=0;ctx.fillStyle=pos?'rgba(74,144,217,.25)':'rgba(245,158,11,.22)';ctx.fillRect(xx-barW/2,top,barW,height);ctx.strokeStyle=pos?'#4a90d9':'#f59e0b';ctx.strokeRect(xx-barW/2,top,barW,height);if(i<items.length-1){ctx.strokeStyle='#2a3348';ctx.beginPath();ctx.moveTo(xx+barW/2,s.y(end));ctx.lineTo(p.l+step*(i+1)+step/2-barW/2,s.y(end));ctx.stroke();}ctx.fillStyle=pos?'#4a90d9':'#f59e0b';ctx.textAlign='center';ctx.font='600 9px JetBrains Mono, monospace';ctx.fillText(moneyK(it[1]),xx,Math.max(12,Math.min(h-24,top-5)));ctx.fillStyle='#4a5568';ctx.font='9px JetBrains Mono, monospace';ctx.fillText(it[0],xx,h-12);});
-}
-function drawCharts(d,r,pts){drawAdvantage(pts);drawMomentum(pts);drawWaterfall(d,r);}
+// ============ SCENARIO MODEL ============
+// Each scenario tracks an end-state given a `year` horizon and a shared monthly budget.
+// The "monthly budget" is the max actual monthly cost across scenarios — so cheaper scenarios
+// invest the surplus into the S&P, which is the apples-to-apples way to model
+// "invest the difference between the lease and the purchase".
 
-function calc(){
-  const d=getInputs(),y=d.y,r=projectAt(d,y),pts=buildSeries(d);
-  $('v_curVal').textContent=fmt(d.cV);$('v_curLoan').textContent=fmt(d.cL);$('v_curRate').textContent=d.cL>0?d.cR.toFixed(1)+'%':'n/a';$('v_curTerm').textContent=d.cL>0?d.cT+'mo':'n/a';$('v_curMiles').textContent=(+$('curMiles').value).toLocaleString();$('v_curMpg').textContent=$('curMpg').value;$('v_curGasPrice').textContent='$'+(+$('curGasPrice').value).toFixed(2);$('v_curKwh').textContent=$('curKwh').value;$('v_curElecRate').textContent='$'+(+$('curElecRate').value).toFixed(2);$('v_curIns').textContent=fmtMo(d.cI);$('v_curMaint').textContent=fmtMo(d.cM);
-  $('v_newPrice').textContent=fmt(d.nP);$('v_downPay').textContent=fmt(d.downPay);$('v_txCosts').textContent=fmt(d.txC);$('v_newRate').textContent=d.nR.toFixed(1)+'%';$('v_newTerm').textContent=d.nT+'mo';$('v_newMpg').textContent=$('newMpg').value;$('v_newGasPrice').textContent='$'+(+$('newGasPrice').value).toFixed(2);$('v_newKwh').textContent=$('newKwh').value;$('v_newElecRate').textContent='$'+(+$('newElecRate').value).toFixed(2);$('v_newIns').textContent=fmtMo(d.nI);$('v_newMaint').textContent=fmtMo(d.nM);$('v_newResid').textContent=fmt(d.nRes)+' ('+Math.round(d.nRes/d.nP*100)+'%)';
-  $('v_invReturn').textContent=d.iR.toFixed(1)+'%';$('v_bizUse').textContent=$('bizUse').value+'%';$('v_taxRate').textContent=$('taxRate').value+'%';$('v_years').textContent=y+'yr';
-  $('c_curPmt').textContent=fmtMo(d.curPayment);$('c_curFuel').textContent=fmtMo(d.cF);$('c_curIns').textContent=fmtMo(d.cI);$('c_curMaint').textContent=fmtMo(d.cM);$('c_curTotal').textContent=fmtMo(d.curPayment+d.cF+d.cI+d.cM);$('c_newPmt').textContent=fmtMo(d.payment);$('c_newFuel').textContent=fmtMo(d.nF);$('c_newIns').textContent=fmtMo(d.nI);$('c_newMaint').textContent=fmtMo(d.nM);$('c_newTotal').textContent=fmtMo(d.payment+d.nF+d.nI+d.nM);
-  const nEl=$('r_net');nEl.textContent=fmtS(Math.round(r.net));nEl.className='value '+(r.net>=0?'positive':'negative');$('r_sub').textContent='model estimate over '+y+'yr · '+fmt(d.invested)+' invested @ '+d.iR.toFixed(0)+'%';
-  $('r_keepValue').textContent=fmtS(Math.round(r.oldEnd));$('r_keepBalance').textContent='-'+fmt(Math.round(r.curRBal));$('r_keepOps').textContent='-'+fmt(Math.round(r.curOpsT));$('r_keepPmts').textContent='-'+fmt(Math.round(r.curTotP));$('r_keepPos').textContent=fmtS(Math.round(r.keepW));$('r_keepPos').className='bk-val '+(r.keepW>=0?'pos':'neg');
-  $('r_fv').textContent=fmtS(Math.round(r.fv));$('r_newOps').textContent='-'+fmt(Math.round(r.newOpsT));$('r_principal').textContent='-'+fmt(Math.round(r.prinPaid));$('r_txCosts').textContent='-'+fmt(Math.round(d.txC));$('r_negEquity').textContent='-'+fmt(Math.round(d.negEquity));$('r_negRow').className='bk-row warn '+(d.negEquity>0?'':'hidden');$('r_cashNeeded').textContent='-'+fmt(Math.round(d.upfrontCash));$('r_cashRow').className='bk-row warn '+(d.upfrontCash>0?'':'hidden');$('r_tax').textContent=fmtS(Math.round(r.taxBen));$('r_equity').textContent=fmtS(Math.round(r.nEq));$('r_equity').className='bk-val '+(r.nEq>=0?'pos':'neg');$('r_interest').textContent='-'+fmt(Math.round(r.intPaid));$('r_switchPos').textContent=fmtS(Math.round(r.switchW));$('r_switchPos').className='bk-val '+(r.switchW>=0?'pos':'neg');$('r_monthly').textContent=fmtMo(Math.abs(Math.round(r.effectiveMonthly)));$('r_monthly').className='bk-val '+(r.effectiveMonthly<=0?'pos':'neg');
-  $('chartBreakEven').textContent=breakEvenText(pts);$('momentumSub').textContent='Yearly change in advantage';$('waterfallSub').textContent='Drivers of '+fmtS(Math.round(r.net));drawCharts(d,r,pts);
-  return {inputs:d,result:r,points:pts};
+function scenarioCash(d, scen) {
+  if (scen === 'keep') return { saleCash: 0, negEquity: 0, upfront: 0, initialInvest: 0, upfrontShortfall: 0 };
+  const saleCash = Math.max(0, d.curVal - d.curLoan);
+  const negEquity = Math.max(0, d.curLoan - d.curVal);
+  let upfront;
+  if (scen === 'finance') upfront = d.downPay + d.txCosts;
+  else upfront = d.leaseDrive + negEquity; // negative equity rolled into lease counted as upfront cash
+  const initialInvest = Math.max(0, saleCash - upfront);
+  const upfrontShortfall = Math.max(0, upfront - saleCash);
+  return { saleCash, negEquity, upfront, initialInvest, upfrontShortfall };
 }
 
-function sp(id,v,btn){$(id).value=v;btn.parentElement.querySelectorAll('.scenario-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');calc();}
-function sr(mode,btn){const p=+$('newPrice').value,y=+$('years').value;const r={heavy:.20,avg:.12,light:.07};$('newResid').value=Math.round(p*Math.pow(1-r[mode],y)/500)*500;btn.parentElement.querySelectorAll('.scenario-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');calc();}
-
-function getScenarios(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||'[]');}catch(e){return[];}}
-function setScenarios(items){localStorage.setItem(STORE_KEY,JSON.stringify(items));}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function captureState(){
-  const values={};
-  inputIds.forEach(id=>values[id]=$(id).value);
-  return {values,curFuelType,newFuelType};
+function scenarioMonthly(d, scen) {
+  if (scen === 'keep') {
+    const loanPmt = pmt(d.curLoan, d.curRate, d.curTerm);
+    const ops = d.curFuel + d.curIns + d.curMaint;
+    return { loanPmt, ops, total: loanPmt + ops };
+  }
+  if (scen === 'finance') {
+    const cash = scenarioCash(d, scen);
+    const principal = Math.max(0, d.newPrice + cash.negEquity - d.downPay);
+    const loanPmt = pmt(principal, d.newRate, d.newTerm);
+    const ops = d.newFuel + d.newIns + d.newMaint;
+    return { loanPmt, ops, total: loanPmt + ops, principal };
+  }
+  // lease — maintenance halved (warranty)
+  const leasePmt = d.leasePmt;
+  const ops = d.newFuel + d.newIns + d.newMaint * 0.5;
+  return { leasePmt, ops, total: leasePmt + ops };
 }
-function applyState(state){
-  Object.keys(state.values||{}).forEach(id=>{if($(id))$(id).value=state.values[id];});
-  setCurFuel(state.curFuelType||'gas');
-  setNewFuel(state.newFuelType||'gas');
+
+function projectScenario(d, scen, year, budget) {
+  const months = year * 12;
+  const cash = scenarioCash(d, scen);
+  const mo = scenarioMonthly(d, scen);
+  const monthlySurplus = Math.max(0, budget - mo.total);
+
+  let loanPaid = 0, balanceEnd = 0, interestPaid = 0, principalPaid = 0;
+  let carValueEnd = 0;
+  let opsTotal = mo.ops * months;
+  let endFees = 0;
+  let leasePaid = 0;
+  let taxBenefit = 0;
+
+  if (scen === 'keep') {
+    const mp = Math.min(months, d.curTerm);
+    loanPaid = mo.loanPmt * mp;
+    balanceEnd = bal(d.curLoan, d.curRate, d.curTerm, mp);
+    principalPaid = d.curLoan - balanceEnd;
+    interestPaid = loanPaid - principalPaid;
+    carValueEnd = d.curVal * Math.pow(0.85, year);
+  } else if (scen === 'finance') {
+    const principal = mo.principal;
+    const mp = Math.min(months, d.newTerm);
+    loanPaid = mo.loanPmt * mp;
+    balanceEnd = bal(principal, d.newRate, d.newTerm, mp);
+    principalPaid = principal - balanceEnd;
+    interestPaid = loanPaid - principalPaid;
+    if (d.newPrice > 0 && d.newResid > 0) {
+      carValueEnd = d.newPrice * Math.pow(d.newResid / d.newPrice, year / d.y);
+    }
+    taxBenefit = (interestPaid + opsTotal) * d.bizUse * d.taxRate;
+  } else {
+    leasePaid = d.leasePmt * months;
+    const overPerYear = Math.max(0, d.curMiles - d.leaseCap);
+    endFees = overPerYear * year * d.leaseOver;
+    taxBenefit = (leasePaid + opsTotal) * d.bizUse * d.taxRate;
+  }
+
+  const fvInitial = fvLump(cash.initialInvest, d.invReturn, year);
+  const fvMonthly = fvAnnuity(monthlySurplus, d.invReturn, months);
+  const investmentFV = fvInitial + fvMonthly;
+  const investmentBase = cash.initialInvest + monthlySurplus * months;
+  const investmentGain = investmentFV - investmentBase;
+
+  const netWealth = investmentFV + carValueEnd - balanceEnd - cash.upfrontShortfall - endFees + taxBenefit;
+
+  return {
+    year, months, scen,
+    monthly: mo.total, monthlySurplus,
+    loanPaid, balanceEnd, principalPaid, interestPaid,
+    leasePaid, opsTotal, endFees, carValueEnd,
+    upfront: cash.upfront, upfrontShortfall: cash.upfrontShortfall,
+    initialInvest: cash.initialInvest,
+    investmentFV, investmentBase, investmentGain,
+    taxBenefit, netWealth,
+  };
+}
+
+function computeAll(d, year) {
+  const m_keep = scenarioMonthly(d, 'keep').total;
+  const m_fin = scenarioMonthly(d, 'finance').total;
+  const m_lse = scenarioMonthly(d, 'lease').total;
+  const budget = Math.max(m_keep, m_fin, m_lse);
+  return {
+    budget,
+    keep: projectScenario(d, 'keep', year, budget),
+    finance: projectScenario(d, 'finance', year, budget),
+    lease: projectScenario(d, 'lease', year, budget),
+  };
+}
+
+function buildSeries(d) {
+  const pts = [];
+  for (let y = 0; y <= d.y; y++) pts.push(computeAll(d, y));
+  return pts;
+}
+
+// ============ CHART ============
+function chartCtx(id) {
+  const canvas = $(id), ctx = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect(), ratio = window.devicePixelRatio || 1;
+  canvas.width = Math.max(1, Math.round(rect.width * ratio));
+  canvas.height = Math.max(1, Math.round(rect.height * ratio));
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  ctx.clearRect(0, 0, rect.width, rect.height);
+  ctx.font = '10px JetBrains Mono, monospace';
+  return { ctx, w: rect.width, h: rect.height, p: { l: 60, r: 60, t: 18, b: 32 } };
+}
+function scaleY(vals, h, p) {
+  let min = Math.min(...vals, 0), max = Math.max(...vals, 0);
+  if (min === max) { min -= 1000; max += 1000; }
+  const pad = (max - min) * 0.12; min -= pad; max += pad;
+  return { min, max, y: v => p.t + (max - v) / (max - min) * (h - p.t - p.b) };
+}
+function fmtAxis(v) {
+  const abs = Math.abs(v);
+  if (abs >= 1000) return (v < 0 ? '-' : '') + '$' + Math.round(abs / 1000) + 'k';
+  return (v < 0 ? '-' : '') + '$' + Math.round(abs);
+}
+function drawWealth(pts) {
+  if (!pts.length) return;
+  const xs = pts.map(p => p.keep.year);
+  const all = [];
+  pts.forEach(p => { all.push(p.keep.netWealth, p.finance.netWealth, p.lease.netWealth); });
+  const { ctx, w, h, p } = chartCtx('wealthChart');
+  const s = scaleY(all, h, p);
+  const xMax = xs[xs.length - 1];
+  const xpos = yr => p.l + (xMax === 0 ? 0 : (yr / xMax) * (w - p.l - p.r));
+
+  // Y grid + labels
+  ctx.lineWidth = 1; ctx.strokeStyle = '#1a2235'; ctx.fillStyle = '#4a5568'; ctx.textAlign = 'right';
+  for (let i = 0; i <= 4; i++) {
+    const v = s.min + (s.max - s.min) * i / 4, yy = s.y(v);
+    ctx.beginPath(); ctx.moveTo(p.l, yy); ctx.lineTo(w - p.r, yy); ctx.stroke();
+    ctx.fillText(fmtAxis(v), p.l - 6, yy + 3);
+  }
+  ctx.strokeStyle = '#2a3348';
+  ctx.beginPath(); ctx.moveTo(p.l, s.y(0)); ctx.lineTo(w - p.r, s.y(0)); ctx.stroke();
+
+  // X labels
+  ctx.fillStyle = '#4a5568'; ctx.textAlign = 'center';
+  pts.forEach(pt => {
+    const yr = pt.keep.year;
+    ctx.fillText(yr === 0 ? 'Now' : 'Yr ' + yr, xpos(yr), h - 12);
+  });
+
+  // Lines
+  const drawLine = (key, color, width) => {
+    ctx.strokeStyle = color; ctx.lineWidth = width;
+    ctx.beginPath();
+    pts.forEach((pt, i) => {
+      const x = xpos(pt[key].year), y = s.y(pt[key].netWealth);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    pts.forEach(pt => {
+      const x = xpos(pt[key].year), y = s.y(pt[key].netWealth);
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(x, y, 3.2, 0, Math.PI * 2); ctx.fill();
+    });
+  };
+  drawLine('keep', '#6b7a8d', 2);
+  drawLine('finance', '#f59e0b', 2);
+  drawLine('lease', '#a78bfa', 2.4);
+
+  // End labels
+  const last = pts[pts.length - 1];
+  const endLabel = (key, color) => {
+    const x = xpos(last[key].year), y = s.y(last[key].netWealth);
+    ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.font = '600 10px JetBrains Mono, monospace';
+    ctx.fillText(fmtAxis(last[key].netWealth), Math.min(x + 6, w - p.r + 2), y + 3);
+    ctx.font = '10px JetBrains Mono, monospace';
+  };
+  endLabel('keep', '#6b7a8d');
+  endLabel('finance', '#f59e0b');
+  endLabel('lease', '#a78bfa');
+}
+
+// ============ RENDER ============
+function winnerName(all) {
+  const arr = [
+    { key: 'keep', name: 'Keep current car', cls: 'keep', val: all.keep.netWealth },
+    { key: 'finance', name: 'Finance & buy', cls: 'finance', val: all.finance.netWealth },
+    { key: 'lease', name: 'Lease + invest difference', cls: 'lease', val: all.lease.netWealth },
+  ];
+  arr.sort((a, b) => b.val - a.val);
+  return { winner: arr[0], runnerUp: arr[1], ranked: arr };
+}
+
+function calc() {
+  const d = getInputs();
+
+  // Value displays
+  $('v_curVal').textContent = fmt(d.curVal);
+  $('v_curLoan').textContent = fmt(d.curLoan);
+  $('v_curRate').textContent = d.curLoan > 0 ? d.curRate.toFixed(1) + '%' : 'n/a';
+  $('v_curTerm').textContent = d.curLoan > 0 ? d.curTerm + 'mo' : 'n/a';
+  $('v_curMiles').textContent = d.curMiles.toLocaleString();
+  $('v_curMpg').textContent = $('curMpg').value;
+  $('v_curGasPrice').textContent = '$' + (+$('curGasPrice').value).toFixed(2);
+  $('v_curKwh').textContent = $('curKwh').value;
+  $('v_curElecRate').textContent = '$' + (+$('curElecRate').value).toFixed(2);
+  $('v_curIns').textContent = fmtMo(d.curIns);
+  $('v_curMaint').textContent = fmtMo(d.curMaint);
+
+  $('v_newPrice').textContent = fmt(d.newPrice);
+  $('v_newMpg').textContent = $('newMpg').value;
+  $('v_newGasPrice').textContent = '$' + (+$('newGasPrice').value).toFixed(2);
+  $('v_newKwh').textContent = $('newKwh').value;
+  $('v_newElecRate').textContent = '$' + (+$('newElecRate').value).toFixed(2);
+  $('v_newIns').textContent = fmtMo(d.newIns);
+  $('v_newMaint').textContent = fmtMo(d.newMaint);
+  $('v_downPay').textContent = fmt(d.downPay);
+  $('v_newRate').textContent = d.newRate.toFixed(1) + '%';
+  $('v_newTerm').textContent = d.newTerm + 'mo';
+  $('v_txCosts').textContent = fmt(d.txCosts);
+  $('v_newResid').textContent = fmt(d.newResid) + (d.newPrice > 0 ? ' (' + Math.round(d.newResid / d.newPrice * 100) + '%)' : '');
+
+  $('v_leasePmt').textContent = fmtMo(d.leasePmt);
+  $('v_leaseTerm').textContent = d.leaseTerm + 'mo';
+  $('v_leaseDrive').textContent = fmt(d.leaseDrive);
+  $('v_leaseCap').textContent = d.leaseCap.toLocaleString() + 'mi';
+  $('v_leaseOver').textContent = '$' + d.leaseOver.toFixed(2) + '/mi';
+
+  $('v_years').textContent = d.y + 'yr';
+  $('v_invReturn').textContent = d.invReturn.toFixed(1) + '%';
+  $('v_taxRate').textContent = $('taxRate').value + '%';
+  $('v_bizUse').textContent = $('bizUse').value + '%';
+
+  const series = buildSeries(d);
+  const last = series[series.length - 1];
+  const { winner, runnerUp } = winnerName(last);
+
+  // Verdict
+  $('v_periodYrs').textContent = d.y;
+  $('v_winner').textContent = winner.name;
+  $('v_winner').className = 'verdict-name ' + winner.cls;
+  $('v_winSub').textContent = 'Net wealth: ' + fmtS(Math.round(winner.val));
+  const delta = winner.val - runnerUp.val;
+  $('v_winDelta').textContent = delta > 0 ? fmt(Math.round(delta)) + ' ahead of ' + runnerUp.name.toLowerCase() : 'Tied';
+
+  // Scenario cards
+  const m_keep = scenarioMonthly(d, 'keep').total;
+  const m_fin = scenarioMonthly(d, 'finance').total;
+  const m_lse = scenarioMonthly(d, 'lease').total;
+
+  $('mo-keep').textContent = fmtMo(m_keep);
+  $('mo-finance').textContent = fmtMo(m_fin);
+  $('mo-lease').textContent = fmtMo(m_lse);
+
+  $('net-keep').textContent = fmtS(Math.round(last.keep.netWealth));
+  $('net-finance').textContent = fmtS(Math.round(last.finance.netWealth));
+  $('net-lease').textContent = fmtS(Math.round(last.lease.netWealth));
+  $('net-keep').className = 'sc-net ' + (last.keep.netWealth >= 0 ? 'pos' : 'neg');
+  $('net-finance').className = 'sc-net ' + (last.finance.netWealth >= 0 ? 'pos' : 'neg');
+  $('net-lease').className = 'sc-net ' + (last.lease.netWealth >= 0 ? 'pos' : 'neg');
+
+  $('end-keep').textContent = fmt(Math.round(last.keep.carValueEnd));
+  $('end-finance').textContent = fmt(Math.round(last.finance.carValueEnd));
+  $('inv-lease').textContent = fmt(Math.round(last.lease.investmentFV));
+
+  // Win highlight
+  ['card-keep', 'card-finance', 'card-lease'].forEach(id => $(id).classList.remove('win'));
+  document.querySelectorAll('.win-badge').forEach(b => b.remove());
+  const winCardId = 'card-' + winner.key;
+  $(winCardId).classList.add('win');
+  const badge = document.createElement('div');
+  badge.className = 'win-badge';
+  badge.textContent = 'Winner';
+  $(winCardId).appendChild(badge);
+
+  // Chart
+  drawWealth(series);
+  $('chartNote').textContent = 'Budget: ' + fmtMo(Math.max(m_keep, m_fin, m_lse));
+
+  renderBreakdown(d, last);
+}
+
+function renderBreakdown(d, last) {
+  const k = last.keep, f = last.finance, l = last.lease;
+
+  $('dm-keep').textContent = fmtMo(k.monthly) + (k.monthlySurplus > 0 ? ' · +' + fmtMo(k.monthlySurplus) + ' invested' : '');
+  $('dm-finance').textContent = fmtMo(f.monthly) + (f.monthlySurplus > 0 ? ' · +' + fmtMo(f.monthlySurplus) + ' invested' : '');
+  $('dm-lease').textContent = fmtMo(l.monthly) + (l.monthlySurplus > 0 ? ' · +' + fmtMo(l.monthlySurplus) + ' invested' : '');
+
+  // KEEP
+  $('b-keep-car').textContent = fmtS(Math.round(k.carValueEnd));
+  $('b-keep-bal').textContent = '-' + fmt(Math.round(k.balanceEnd));
+  $('b-keep-pmt').textContent = '-' + fmt(Math.round(k.loanPaid));
+  $('b-keep-ops').textContent = '-' + fmt(Math.round(k.opsTotal));
+  $('b-keep-inv').textContent = fmtS(Math.round(k.investmentGain));
+  $('b-keep-tot').textContent = fmtS(Math.round(k.netWealth));
+  $('b-keep-tot').className = 'val ' + (k.netWealth >= 0 ? 'pos' : 'neg');
+
+  // FINANCE
+  $('b-fin-car').textContent = fmtS(Math.round(f.carValueEnd));
+  $('b-fin-bal').textContent = '-' + fmt(Math.round(f.balanceEnd));
+  $('b-fin-pmt').textContent = '-' + fmt(Math.round(f.loanPaid));
+  $('b-fin-ops').textContent = '-' + fmt(Math.round(f.opsTotal));
+  $('b-fin-fees').textContent = '-' + fmt(Math.round(f.upfrontShortfall));
+  $('b-fin-inv').textContent = fmtS(Math.round(f.investmentGain));
+  $('b-fin-tax').textContent = fmtS(Math.round(f.taxBenefit));
+  $('b-fin-tot').textContent = fmtS(Math.round(f.netWealth));
+  $('b-fin-tot').className = 'val ' + (f.netWealth >= 0 ? 'pos' : 'neg');
+
+  // LEASE
+  $('b-lse-car').textContent = '$0';
+  $('b-lse-car').className = 'val';
+  $('b-lse-pmt').textContent = '-' + fmt(Math.round(l.leasePaid));
+  $('b-lse-drive').textContent = '-' + fmt(Math.round(d.leaseDrive + l.upfrontShortfall));
+  $('b-lse-ops').textContent = '-' + fmt(Math.round(l.opsTotal));
+  $('b-lse-over').textContent = '-' + fmt(Math.round(l.endFees));
+  $('b-lse-inv').textContent = fmtS(Math.round(l.investmentGain));
+  $('b-lse-tax').textContent = fmtS(Math.round(l.taxBenefit));
+  $('b-lse-tot').textContent = fmtS(Math.round(l.netWealth));
+  $('b-lse-tot').className = 'val ' + (l.netWealth >= 0 ? 'pos' : 'neg');
+}
+
+// ============ INPUTS ============
+function sp(id, v, btn) {
+  $(id).value = v;
+  btn.parentElement.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
   calc();
 }
-function saveScenario(){
-  const current=calc();
-  const fallback='Scenario '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
-  const name=($('scenarioName').value||fallback).trim();
-  const item={id:Date.now().toString(36),name,createdAt:new Date().toISOString(),state:captureState(),net:current.result.net,breakEven:breakEvenText(current.points),years:current.inputs.y};
-  setScenarios([item,...getScenarios()].slice(0,12));
-  $('scenarioName').value='';
-  renderScenarios();
+function sr(mode, btn) {
+  const p = +$('newPrice').value, y = +$('years').value;
+  const rates = { heavy: 0.20, avg: 0.12, light: 0.07 };
+  $('newResid').value = Math.round(p * Math.pow(1 - rates[mode], y) / 500) * 500;
+  btn.parentElement.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  calc();
 }
-function loadScenario(id){
-  const item=getScenarios().find(s=>s.id===id);
-  if(item)applyState(item.state);
+function setCurFuel(t) {
+  curFuelType = t;
+  $('curGasFields').className = t === 'gas' ? '' : 'hidden';
+  $('curEvFields').className = t === 'ev' ? '' : 'hidden';
+  $('curFuelToggle').querySelectorAll('button').forEach((b, i) => {
+    b.className = ((t === 'gas' && i === 0) || (t === 'ev' && i === 1)) ? 'active' : '';
+  });
+  calc();
 }
-function deleteScenario(id){
-  setScenarios(getScenarios().filter(s=>s.id!==id));
-  renderScenarios();
-}
-function renderScenarios(){
-  const list=$('savedList'),items=getScenarios();
-  if(!items.length){list.innerHTML='<div class="saved-empty">Saved scenarios appear here for anyone using this browser.</div>';return;}
-  list.innerHTML=items.map(s=>'<div class="saved-card"><div><div class="saved-name">'+escapeHtml(s.name)+'</div><div class="saved-meta">'+fmtS(Math.round(s.net))+' over '+s.years+'yr · '+escapeHtml(s.breakEven)+'</div></div><div class="saved-actions"><button onclick="loadScenario(\''+s.id+'\')">Load</button><button class="delete" onclick="deleteScenario(\''+s.id+'\')">Del</button></div></div>').join('');
+function setNewFuel(t) {
+  newFuelType = t;
+  $('newGasFields').className = t === 'gas' ? '' : 'hidden';
+  $('newEvFields').className = t === 'ev' ? '' : 'hidden';
+  $('newFuelToggle').querySelectorAll('button').forEach((b, i) => {
+    b.className = ((t === 'gas' && i === 0) || (t === 'ev' && i === 1)) ? 'active' : '';
+  });
+  calc();
 }
 
-function setCurFuel(t){curFuelType=t;$('curGasFields').className=t==='gas'?'':'hidden';$('curEvFields').className=t==='ev'?'':'hidden';$('curFuelToggle').querySelectorAll('button').forEach((b,i)=>{b.className=((t==='gas'&&i===0)||(t==='ev'&&i===1))?'active':''});calc();}
-function setNewFuel(t){newFuelType=t;$('newGasFields').className=t==='gas'?'':'hidden';$('newEvFields').className=t==='ev'?'':'hidden';$('newFuelToggle').querySelectorAll('button').forEach((b,i)=>{b.className=((t==='gas'&&i===0)||(t==='ev'&&i===1))?'active':''});calc();}
-
-function queueCalc(){
-  if(recalcPending)return;
-  recalcPending=true;
-  requestAnimationFrame(()=>{recalcPending=false;calc();});
+// ============ SAVE / LOAD ============
+function getScenarios() { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch (e) { return []; } }
+function setScenarios(items) { localStorage.setItem(STORE_KEY, JSON.stringify(items)); }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+function captureState() {
+  const values = {};
+  inputIds.forEach(id => values[id] = $(id).value);
+  return { values, curFuelType, newFuelType };
 }
-document.addEventListener('input',e=>{if(e.target.matches('input[type="range"]'))queueCalc();});
-document.addEventListener('change',e=>{if(e.target.matches('input[type="range"]'))queueCalc();});
-window.addEventListener('resize',queueCalc);
+function applyState(state) {
+  Object.keys(state.values || {}).forEach(id => { if ($(id)) $(id).value = state.values[id]; });
+  setCurFuel(state.curFuelType || 'gas');
+  setNewFuel(state.newFuelType || 'gas');
+  calc();
+}
+function saveScenario() {
+  const d = getInputs();
+  const last = computeAll(d, d.y);
+  const { winner } = winnerName(last);
+  const fallback = 'Scenario ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  const name = ($('scenarioName').value || fallback).trim();
+  const item = {
+    id: Date.now().toString(36),
+    name,
+    createdAt: new Date().toISOString(),
+    state: captureState(),
+    winner: winner.name,
+    winnerVal: winner.val,
+    years: d.y,
+  };
+  setScenarios([item, ...getScenarios()].slice(0, 12));
+  $('scenarioName').value = '';
+  renderScenarios();
+}
+function loadScenario(id) {
+  const item = getScenarios().find(s => s.id === id);
+  if (item) applyState(item.state);
+}
+function deleteScenario(id) {
+  setScenarios(getScenarios().filter(s => s.id !== id));
+  renderScenarios();
+}
+function renderScenarios() {
+  const list = $('savedList'), items = getScenarios();
+  if (!items.length) { list.innerHTML = '<div class="saved-empty">Saved scenarios appear here for anyone using this browser.</div>'; return; }
+  list.innerHTML = items.map(s =>
+    '<div class="saved-card"><div><div class="saved-name">' + escapeHtml(s.name) + '</div>' +
+    '<div class="saved-meta">' + escapeHtml(s.winner || '—') + ' · ' + fmtS(Math.round(s.winnerVal || 0)) + ' · ' + s.years + 'yr</div></div>' +
+    '<div class="saved-actions"><button onclick="loadScenario(\'' + s.id + '\')">Load</button>' +
+    '<button class="delete" onclick="deleteScenario(\'' + s.id + '\')">Del</button></div></div>'
+  ).join('');
+}
+
+// ============ EXCEL EXPORT (ported from Codex's apply_patch, adapted to 3-scenario model) ============
+function escXml(v) { return String(v).replace(/[<>&"']/g, m => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' }[m])); }
+function cleanSheetName(name) { return name.replace(/[\[\]:*?/\\]/g, '').slice(0, 31); }
+function xlsCell(value, type, formula, style) {
+  const t = type || ((typeof value === 'number' && Number.isFinite(value)) ? 'Number' : 'String');
+  const attrs = (style ? ' ss:StyleID="' + style + '"' : '') + (formula ? ' ss:Formula="' + escXml(formula) + '"' : '');
+  return '<Cell' + attrs + '><Data ss:Type="' + t + '">' + escXml(value == null ? '' : value) + '</Data></Cell>';
+}
+function xlsRow(cells) { return '<Row>' + cells.map(c => xlsCell(c.value, c.type, c.formula, c.style)).join('') + '</Row>'; }
+function xlsSheet(name, rows) { return '<Worksheet ss:Name="' + escXml(cleanSheetName(name)) + '"><Table>' + rows.map(xlsRow).join('') + '</Table></Worksheet>'; }
+function nCell(value, formula) { return { value, formula, style: 'num' }; }
+function moneyCell(value, formula) { return { value, formula, style: 'money' }; }
+function pctCell(value) { return { value, style: 'pct' }; }
+function textCell(value, style) { return { value, type: 'String', style }; }
+
+// Independent amortization simulation — verifies pmt/bal closed-form math.
+function amortizedBalanceCheck(principal, apr, term, months) {
+  if (principal <= 0 || months <= 0) return principal;
+  const pay = pmt(principal, apr, term);
+  let owed = principal;
+  for (let i = 0; i < Math.min(months, term); i++) {
+    const interest = apr === 0 ? 0 : owed * (apr / 100 / 12);
+    owed = Math.max(0, owed + interest - pay);
+  }
+  return months >= term ? 0 : owed;
+}
+function nearly(a, b, tol) { return Math.abs(a - b) <= tol; }
+
+function validateScenarios(d, series) {
+  const checks = [];
+  series.forEach(point => {
+    const yr = point.keep.year;
+    // KEEP loan balance — independent simulation
+    const keepBal = amortizedBalanceCheck(d.curLoan, d.curRate, d.curTerm, Math.min(yr * 12, d.curTerm));
+    checks.push(['Y' + yr + ' keep loan balance', keepBal, point.keep.balanceEnd, nearly(keepBal, point.keep.balanceEnd, 0.05)]);
+
+    // FINANCE loan balance
+    const finPrincipal = Math.max(0, d.newPrice + Math.max(0, d.curLoan - d.curVal) - d.downPay);
+    const finBal = amortizedBalanceCheck(finPrincipal, d.newRate, d.newTerm, Math.min(yr * 12, d.newTerm));
+    checks.push(['Y' + yr + ' finance loan balance', finBal, point.finance.balanceEnd, nearly(finBal, point.finance.balanceEnd, 0.05)]);
+
+    // Principal identity (finance): principalPaid == principal - balanceEnd
+    const finPrinPaid = finPrincipal - point.finance.balanceEnd;
+    checks.push(['Y' + yr + ' finance principal identity', finPrinPaid, point.finance.principalPaid, nearly(finPrinPaid, point.finance.principalPaid, 0.05)]);
+
+    // Net wealth identity — recompute from constituent pieces
+    ['keep', 'finance', 'lease'].forEach(k => {
+      const p = point[k];
+      const recomputed = p.investmentFV + p.carValueEnd - p.balanceEnd - p.upfrontShortfall - p.endFees + p.taxBenefit;
+      checks.push(['Y' + yr + ' ' + k + ' wealth identity', recomputed, p.netWealth, nearly(recomputed, p.netWealth, 0.05)]);
+    });
+
+    // Investment gain identity: gain == fv - base
+    ['keep', 'finance', 'lease'].forEach(k => {
+      const p = point[k];
+      const gain = p.investmentFV - p.investmentBase;
+      checks.push(['Y' + yr + ' ' + k + ' investment gain identity', gain, p.investmentGain, nearly(gain, p.investmentGain, 0.05)]);
+    });
+  });
+  const failed = checks.filter(c => !c[3]);
+  return { checks, failed, ok: failed.length === 0 };
+}
+
+function exportScenarioToExcel() {
+  const d = getInputs();
+  const series = buildSeries(d);
+  const last = series[series.length - 1];
+  const { winner, ranked } = winnerName(last);
+  const validation = validateScenarios(d, series);
+  const now = new Date();
+  const scenarioName = ($('scenarioName').value || 'Current scenario').trim();
+
+  const m_keep = scenarioMonthly(d, 'keep').total;
+  const m_fin = scenarioMonthly(d, 'finance').total;
+  const m_lse = scenarioMonthly(d, 'lease').total;
+  const budget = Math.max(m_keep, m_fin, m_lse);
+
+  // SUMMARY
+  const summaryRows = [
+    [textCell('Scenario name', 'head'), textCell(scenarioName)],
+    [textCell('Exported at', 'head'), textCell(now.toLocaleString())],
+    [textCell('Analysis period', 'head'), nCell(d.y), textCell('years')],
+    [textCell('Validation', 'head'), textCell(validation.ok ? 'PASS (' + validation.checks.length + ' checks)' : 'REVIEW (' + validation.failed.length + ' failed)')],
+    [],
+    [textCell('Scenario', 'head'), textCell('Net wealth at end', 'head'), textCell('Monthly actual', 'head'), textCell('Monthly invested', 'head'), textCell('Rank', 'head')],
+    [textCell('Keep current'), moneyCell(last.keep.netWealth), moneyCell(m_keep), moneyCell(last.keep.monthlySurplus), nCell(ranked.findIndex(r => r.key === 'keep') + 1)],
+    [textCell('Finance & buy'), moneyCell(last.finance.netWealth), moneyCell(m_fin), moneyCell(last.finance.monthlySurplus), nCell(ranked.findIndex(r => r.key === 'finance') + 1)],
+    [textCell('Lease + invest difference'), moneyCell(last.lease.netWealth), moneyCell(m_lse), moneyCell(last.lease.monthlySurplus), nCell(ranked.findIndex(r => r.key === 'lease') + 1)],
+    [],
+    [textCell('Winner', 'head'), textCell(winner.name)],
+    [textCell('Winner net wealth', 'head'), moneyCell(winner.val)],
+    [textCell('Margin over runner-up', 'head'), moneyCell(winner.val - ranked[1].val)],
+    [textCell('Shared monthly budget', 'head'), moneyCell(budget)],
+  ];
+
+  // INPUTS
+  const inputRows = [
+    [textCell('Field', 'head'), textCell('Value', 'head'), textCell('Unit', 'head')],
+    [textCell('--- Current car ---', 'head')],
+    [textCell('Sale / trade value'), moneyCell(d.curVal), textCell('USD')],
+    [textCell('Loan balance'), moneyCell(d.curLoan), textCell('USD')],
+    [textCell('APR'), pctCell(d.curRate / 100), textCell('annual')],
+    [textCell('Remaining term'), nCell(d.curTerm), textCell('months')],
+    [textCell('Annual miles'), nCell(d.curMiles), textCell('miles')],
+    [textCell('Fuel type'), textCell(curFuelType)],
+    [textCell('Monthly fuel'), moneyCell(d.curFuel), textCell('USD/mo')],
+    [textCell('Insurance'), moneyCell(d.curIns), textCell('USD/mo')],
+    [textCell('Maintenance'), moneyCell(d.curMaint), textCell('USD/mo')],
+    [textCell('--- New car (shared) ---', 'head')],
+    [textCell('Purchase price'), moneyCell(d.newPrice), textCell('USD')],
+    [textCell('Fuel type'), textCell(newFuelType)],
+    [textCell('Monthly fuel'), moneyCell(d.newFuel), textCell('USD/mo')],
+    [textCell('Insurance'), moneyCell(d.newIns), textCell('USD/mo')],
+    [textCell('Maintenance (owned)'), moneyCell(d.newMaint), textCell('USD/mo')],
+    [textCell('Maintenance (lease, 50% of owned)'), moneyCell(d.newMaint * 0.5), textCell('USD/mo')],
+    [textCell('--- Finance & buy ---', 'head')],
+    [textCell('Down payment'), moneyCell(d.downPay), textCell('USD')],
+    [textCell('APR'), pctCell(d.newRate / 100), textCell('annual')],
+    [textCell('Loan term'), nCell(d.newTerm), textCell('months')],
+    [textCell('Fees / taxes'), moneyCell(d.txCosts), textCell('USD')],
+    [textCell('Resale value at end'), moneyCell(d.newResid), textCell('USD')],
+    [textCell('--- Lease ---', 'head')],
+    [textCell('Monthly payment'), moneyCell(d.leasePmt), textCell('USD/mo')],
+    [textCell('Lease term'), nCell(d.leaseTerm), textCell('months')],
+    [textCell('Drive-off'), moneyCell(d.leaseDrive), textCell('USD')],
+    [textCell('Mileage cap / yr'), nCell(d.leaseCap), textCell('miles')],
+    [textCell('Overage rate'), moneyCell(d.leaseOver), textCell('USD/mile')],
+    [textCell('--- Assumptions ---', 'head')],
+    [textCell('S&P annual return'), pctCell(d.invReturn / 100), textCell('annual')],
+    [textCell('Marginal tax rate'), pctCell(d.taxRate), textCell('share')],
+    [textCell('Business use'), pctCell(d.bizUse), textCell('share')],
+  ];
+
+  // ANNUAL PROJECTION — every year, every scenario
+  const projectionHead = [
+    'Year', 'Months',
+    'Keep monthly', 'Keep loan paid', 'Keep loan balance', 'Keep ops', 'Keep car value', 'Keep investment FV', 'Keep tax benefit', 'Keep net wealth',
+    'Finance monthly', 'Finance loan paid', 'Finance loan balance', 'Finance ops', 'Finance car value', 'Finance investment FV', 'Finance tax benefit', 'Finance net wealth',
+    'Lease monthly', 'Lease payments', 'Lease ops', 'Lease drive-off', 'Lease overage', 'Lease investment FV', 'Lease tax benefit', 'Lease net wealth',
+    'Winner', 'Winner advantage vs 2nd'
+  ];
+  const projectionRows = [projectionHead.map(h => textCell(h, 'head'))];
+  series.forEach(pt => {
+    const k = pt.keep, f = pt.finance, l = pt.lease;
+    const sorted = [['keep', k.netWealth], ['finance', f.netWealth], ['lease', l.netWealth]].sort((a, b) => b[1] - a[1]);
+    projectionRows.push([
+      nCell(k.year), nCell(k.months),
+      moneyCell(k.monthly), moneyCell(k.loanPaid), moneyCell(k.balanceEnd), moneyCell(k.opsTotal), moneyCell(k.carValueEnd), moneyCell(k.investmentFV), moneyCell(k.taxBenefit), moneyCell(k.netWealth),
+      moneyCell(f.monthly), moneyCell(f.loanPaid), moneyCell(f.balanceEnd), moneyCell(f.opsTotal), moneyCell(f.carValueEnd), moneyCell(f.investmentFV), moneyCell(f.taxBenefit), moneyCell(f.netWealth),
+      moneyCell(l.monthly), moneyCell(l.leasePaid), moneyCell(l.opsTotal), moneyCell(d.leaseDrive + l.upfrontShortfall), moneyCell(l.endFees), moneyCell(l.investmentFV), moneyCell(l.taxBenefit), moneyCell(l.netWealth),
+      textCell(sorted[0][0]), moneyCell(sorted[0][1] - sorted[1][1])
+    ]);
+  });
+
+  // FORMULAS
+  const formulaRows = [
+    [textCell('Equation', 'head'), textCell('Definition', 'head')],
+    [textCell('PMT'), textCell('principal * r * (1+r)^n / ((1+r)^n - 1); r = APR/100/12; n = term in months; zero APR uses principal/term')],
+    [textCell('Loan balance after m months'), textCell('principal*(1+r)^m - PMT*((1+r)^m - 1)/r')],
+    [textCell('Monthly fuel (gas)'), textCell('(annual miles / MPG) * gas $/gal / 12')],
+    [textCell('Monthly fuel (EV)'), textCell('(annual miles * kWh per 100mi / 100) * $/kWh / 12')],
+    [textCell('Initial invested (lump)'), textCell('max(0, sale cash - upfront) where sale cash = max(0, current value - current loan)')],
+    [textCell('Investment FV (lump)'), textCell('initial invested * (1 + annual return)^years')],
+    [textCell('Monthly surplus'), textCell('max(0, budget - scenario monthly); budget = max of all scenario monthlies')],
+    [textCell('Investment FV (monthly contributions)'), textCell('surplus * ((1 + r_m)^months - 1) / r_m; r_m = annual return / 12; zero return uses surplus * months')],
+    [textCell('Current car value at end'), textCell('current value * 0.85^years (15% annual depreciation)')],
+    [textCell('New car resale at year y'), textCell('newPrice * (newResid / newPrice)^(y / analysisYears)')],
+    [textCell('Lease end fees'), textCell('max(0, annual miles - lease cap) * years * overage $/mi')],
+    [textCell('Tax benefit (finance)'), textCell('(loan interest paid + operating costs) * business use * marginal tax rate')],
+    [textCell('Tax benefit (lease)'), textCell('(lease payments + operating costs) * business use * marginal tax rate')],
+    [textCell('Net wealth (per scenario)'), textCell('investment FV + car value at end - loan balance remaining - upfront shortfall - end fees + tax benefit')],
+    [textCell('Apples-to-apples premise'), textCell('Every scenario "spends" the same monthly budget. Whatever is not spent on the car is invested at the S&P rate. This makes lease vs buy comparable by routing the lease/buy payment difference into investments.')],
+  ];
+
+  // VALIDATION
+  const validationRows = [
+    [textCell('Check', 'head'), textCell('Independent value', 'head'), textCell('Model value', 'head'), textCell('Status', 'head')],
+    ...validation.checks.map(c => [textCell(c[0]), moneyCell(c[1]), moneyCell(c[2]), textCell(c[3] ? 'PASS' : 'FAIL', c[3] ? 'ok' : 'warn')])
+  ];
+
+  const workbook = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>' +
+    '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">' +
+    '<Styles><Style ss:ID="head"><Font ss:Bold="1"/><Interior ss:Color="#D9EAF7" ss:Pattern="Solid"/></Style><Style ss:ID="money"><NumberFormat ss:Format="$#,##0.00;[Red]-$#,##0.00"/></Style><Style ss:ID="num"><NumberFormat ss:Format="#,##0.00"/></Style><Style ss:ID="pct"><NumberFormat ss:Format="0.0%"/></Style><Style ss:ID="ok"><Font ss:Color="#008000" ss:Bold="1"/></Style><Style ss:ID="warn"><Font ss:Color="#C00000" ss:Bold="1"/></Style></Styles>' +
+    xlsSheet('Summary', summaryRows) +
+    xlsSheet('Inputs', inputRows) +
+    xlsSheet('Annual Projection', projectionRows) +
+    xlsSheet('Formulas', formulaRows) +
+    xlsSheet('Validation', validationRows) +
+    '</Workbook>';
+
+  const blob = new Blob([workbook], { type: 'application/vnd.ms-excel' });
+  const link = document.createElement('a');
+  const stamp = now.toISOString().slice(0, 10);
+  link.href = URL.createObjectURL(blob);
+  link.download = 'no-free-car-scenario-' + stamp + '.xls';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+
+  const status = $('exportStatus');
+  status.textContent = validation.ok
+    ? 'Exported. ' + validation.checks.length + ' validation checks passed.'
+    : 'Exported, but ' + validation.failed.length + ' of ' + validation.checks.length + ' checks failed — see Validation sheet.';
+  status.className = 'export-status ' + (validation.ok ? '' : 'warn');
+}
+
+// ============ INIT ============
+function queueCalc() {
+  if (recalcPending) return;
+  recalcPending = true;
+  requestAnimationFrame(() => { recalcPending = false; calc(); });
+}
+document.addEventListener('input', e => { if (e.target.matches('input[type="range"]')) queueCalc(); });
+document.addEventListener('change', e => { if (e.target.matches('input[type="range"]')) queueCalc(); });
+window.addEventListener('resize', queueCalc);
 renderScenarios();
 calc();
 </script>
