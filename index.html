@@ -167,6 +167,12 @@
   .br-row .val.neg { color: var(--red); }
   .br-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 7px; font-size: 12px; }
   .br-row.total .lbl { color: var(--text-hi); font-weight: 600; }
+  .br-group-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted-2); margin: 10px 0 4px; padding-top: 8px; border-top: 1px dashed var(--border); }
+  .br-group-label:first-of-type { margin-top: 4px; padding-top: 0; border-top: none; }
+  .br-group-label.info { color: var(--muted-2); }
+  .br-row.info { opacity: 0.7; font-size: 10px; padding: 2px 0; }
+  .br-row.info .lbl::before { content: '· '; }
+  .br-row.info .val { color: var(--muted); font-weight: 500; }
   .br-row.total .val { font-size: 13px; }
 
   /* ============ SAVED SCENARIOS ============ */
@@ -525,7 +531,7 @@
     <div class="chart-head">
       <div>
         <div class="chart-title">Wealth Trajectory</div>
-        <div class="chart-sub">Net position over time — each scenario invests its monthly savings vs the most expensive path</div>
+        <div class="chart-sub">Net wealth at end of each year. Apples-to-apples premise: every scenario "spends" the same monthly budget; cheaper ones invest the surplus into S&amp;P.</div>
       </div>
       <div class="chart-sub" id="chartNote"></div>
     </div>
@@ -544,12 +550,15 @@
         <div class="detail-name">Keep current — breakdown</div>
         <div class="detail-monthly" id="dm-keep"></div>
       </div>
+      <div class="br-group-label">Wealth at end (sums to net)</div>
+      <div class="br-row"><span class="lbl">Investment value at end</span><span class="val pos" id="b-keep-inv"></span></div>
       <div class="br-row"><span class="lbl">Car value at end</span><span class="val pos" id="b-keep-car"></span></div>
       <div class="br-row"><span class="lbl">Loan balance remaining</span><span class="val neg" id="b-keep-bal"></span></div>
-      <div class="br-row"><span class="lbl">Loan payments</span><span class="val neg" id="b-keep-pmt"></span></div>
-      <div class="br-row"><span class="lbl">Operating costs</span><span class="val neg" id="b-keep-ops"></span></div>
-      <div class="br-row"><span class="lbl">Investment growth</span><span class="val pos" id="b-keep-inv"></span></div>
       <div class="br-row total"><span class="lbl">Net position</span><span class="val" id="b-keep-tot"></span></div>
+      <div class="br-group-label info">Spent from monthly budget (info)</div>
+      <div class="br-row info"><span class="lbl">Loan payments</span><span class="val" id="b-keep-pmt"></span></div>
+      <div class="br-row info"><span class="lbl">Operating costs</span><span class="val" id="b-keep-ops"></span></div>
+      <div class="br-row info"><span class="lbl">Of which investment gain</span><span class="val" id="b-keep-gain"></span></div>
     </div>
 
     <div class="detail-card finance">
@@ -557,14 +566,17 @@
         <div class="detail-name">Finance &amp; buy — breakdown</div>
         <div class="detail-monthly" id="dm-finance"></div>
       </div>
+      <div class="br-group-label">Wealth at end (sums to net)</div>
+      <div class="br-row"><span class="lbl">Investment value at end</span><span class="val pos" id="b-fin-inv"></span></div>
       <div class="br-row"><span class="lbl">Resale value at end</span><span class="val pos" id="b-fin-car"></span></div>
       <div class="br-row"><span class="lbl">Loan balance remaining</span><span class="val neg" id="b-fin-bal"></span></div>
-      <div class="br-row"><span class="lbl">Loan payments</span><span class="val neg" id="b-fin-pmt"></span></div>
-      <div class="br-row"><span class="lbl">Operating costs</span><span class="val neg" id="b-fin-ops"></span></div>
-      <div class="br-row"><span class="lbl">Fees / down (excess)</span><span class="val neg" id="b-fin-fees"></span></div>
-      <div class="br-row"><span class="lbl">Investment growth</span><span class="val pos" id="b-fin-inv"></span></div>
+      <div class="br-row"><span class="lbl">Upfront paid from pocket</span><span class="val neg" id="b-fin-fees"></span></div>
       <div class="br-row"><span class="lbl">Tax benefit</span><span class="val pos" id="b-fin-tax"></span></div>
       <div class="br-row total"><span class="lbl">Net position</span><span class="val" id="b-fin-tot"></span></div>
+      <div class="br-group-label info">Spent from monthly budget (info)</div>
+      <div class="br-row info"><span class="lbl">Loan payments</span><span class="val" id="b-fin-pmt"></span></div>
+      <div class="br-row info"><span class="lbl">Operating costs</span><span class="val" id="b-fin-ops"></span></div>
+      <div class="br-row info"><span class="lbl">Of which investment gain</span><span class="val" id="b-fin-gain"></span></div>
     </div>
 
     <div class="detail-card lease">
@@ -572,14 +584,17 @@
         <div class="detail-name">Lease + invest — breakdown</div>
         <div class="detail-monthly" id="dm-lease"></div>
       </div>
-      <div class="br-row"><span class="lbl">Car value at end</span><span class="val" id="b-lse-car">—</span></div>
-      <div class="br-row"><span class="lbl">Lease payments</span><span class="val neg" id="b-lse-pmt"></span></div>
-      <div class="br-row"><span class="lbl">Drive-off</span><span class="val neg" id="b-lse-drive"></span></div>
-      <div class="br-row"><span class="lbl">Operating costs</span><span class="val neg" id="b-lse-ops"></span></div>
+      <div class="br-group-label">Wealth at end (sums to net)</div>
+      <div class="br-row"><span class="lbl">Investment value at end</span><span class="val pos" id="b-lse-inv"></span></div>
+      <div class="br-row"><span class="lbl">Car value at end</span><span class="val" id="b-lse-car">$0</span></div>
+      <div class="br-row"><span class="lbl">Upfront paid from pocket</span><span class="val neg" id="b-lse-drive"></span></div>
       <div class="br-row"><span class="lbl">Mileage overage</span><span class="val neg" id="b-lse-over"></span></div>
-      <div class="br-row"><span class="lbl">Investment growth (S&amp;P)</span><span class="val pos" id="b-lse-inv"></span></div>
       <div class="br-row"><span class="lbl">Tax benefit</span><span class="val pos" id="b-lse-tax"></span></div>
       <div class="br-row total"><span class="lbl">Net position</span><span class="val" id="b-lse-tot"></span></div>
+      <div class="br-group-label info">Spent from monthly budget (info)</div>
+      <div class="br-row info"><span class="lbl">Lease payments</span><span class="val" id="b-lse-pmt"></span></div>
+      <div class="br-row info"><span class="lbl">Operating costs</span><span class="val" id="b-lse-ops"></span></div>
+      <div class="br-row info"><span class="lbl">Of which investment gain</span><span class="val" id="b-lse-gain"></span></div>
     </div>
   </div>
 
@@ -984,37 +999,39 @@ function renderBreakdown(d, last) {
   $('dm-finance').textContent = fmtMo(f.monthly) + (f.monthlySurplus > 0 ? ' · +' + fmtMo(f.monthlySurplus) + ' invested' : '');
   $('dm-lease').textContent = fmtMo(l.monthly) + (l.monthlySurplus > 0 ? ' · +' + fmtMo(l.monthlySurplus) + ' invested' : '');
 
-  // KEEP
+  // KEEP — wealth at end (sums to net), then info section
+  $('b-keep-inv').textContent = fmtS(Math.round(k.investmentFV));
   $('b-keep-car').textContent = fmtS(Math.round(k.carValueEnd));
   $('b-keep-bal').textContent = '-' + fmt(Math.round(k.balanceEnd));
-  $('b-keep-pmt').textContent = '-' + fmt(Math.round(k.loanPaid));
-  $('b-keep-ops').textContent = '-' + fmt(Math.round(k.opsTotal));
-  $('b-keep-inv').textContent = fmtS(Math.round(k.investmentGain));
   $('b-keep-tot').textContent = fmtS(Math.round(k.netWealth));
   $('b-keep-tot').className = 'val ' + (k.netWealth >= 0 ? 'pos' : 'neg');
+  $('b-keep-pmt').textContent = fmt(Math.round(k.loanPaid));
+  $('b-keep-ops').textContent = fmt(Math.round(k.opsTotal));
+  $('b-keep-gain').textContent = fmt(Math.round(k.investmentGain));
 
   // FINANCE
+  $('b-fin-inv').textContent = fmtS(Math.round(f.investmentFV));
   $('b-fin-car').textContent = fmtS(Math.round(f.carValueEnd));
   $('b-fin-bal').textContent = '-' + fmt(Math.round(f.balanceEnd));
-  $('b-fin-pmt').textContent = '-' + fmt(Math.round(f.loanPaid));
-  $('b-fin-ops').textContent = '-' + fmt(Math.round(f.opsTotal));
   $('b-fin-fees').textContent = '-' + fmt(Math.round(f.upfrontShortfall));
-  $('b-fin-inv').textContent = fmtS(Math.round(f.investmentGain));
   $('b-fin-tax').textContent = fmtS(Math.round(f.taxBenefit));
   $('b-fin-tot').textContent = fmtS(Math.round(f.netWealth));
   $('b-fin-tot').className = 'val ' + (f.netWealth >= 0 ? 'pos' : 'neg');
+  $('b-fin-pmt').textContent = fmt(Math.round(f.loanPaid));
+  $('b-fin-ops').textContent = fmt(Math.round(f.opsTotal));
+  $('b-fin-gain').textContent = fmt(Math.round(f.investmentGain));
 
   // LEASE
+  $('b-lse-inv').textContent = fmtS(Math.round(l.investmentFV));
   $('b-lse-car').textContent = '$0';
-  $('b-lse-car').className = 'val';
-  $('b-lse-pmt').textContent = '-' + fmt(Math.round(l.leasePaid));
-  $('b-lse-drive').textContent = '-' + fmt(Math.round(d.leaseDrive + l.upfrontShortfall));
-  $('b-lse-ops').textContent = '-' + fmt(Math.round(l.opsTotal));
+  $('b-lse-drive').textContent = '-' + fmt(Math.round(l.upfrontShortfall));
   $('b-lse-over').textContent = '-' + fmt(Math.round(l.endFees));
-  $('b-lse-inv').textContent = fmtS(Math.round(l.investmentGain));
   $('b-lse-tax').textContent = fmtS(Math.round(l.taxBenefit));
   $('b-lse-tot').textContent = fmtS(Math.round(l.netWealth));
   $('b-lse-tot').className = 'val ' + (l.netWealth >= 0 ? 'pos' : 'neg');
+  $('b-lse-pmt').textContent = fmt(Math.round(l.leasePaid));
+  $('b-lse-ops').textContent = fmt(Math.round(l.opsTotal));
+  $('b-lse-gain').textContent = fmt(Math.round(l.investmentGain));
 }
 
 // ============ INPUTS ============
